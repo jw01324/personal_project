@@ -1,18 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
+using TMPro;
+
 
 public class ControllerInput : MonoBehaviour
 {
     //variables
+    public static int ROUNDS = 5;
     private bool lightOn;
     private bool done;
     private double countdownTimer;
     private double reactionTimer;
-    private double finalTime;
+    private int finalTime;
     private int attempt;
-    private double[] times;
+    private int[] times;
+    private string output;
 
     //objects
     public GameObject sphere;
@@ -26,13 +29,16 @@ public class ControllerInput : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        times = new double[3];
+        times = new int[ROUNDS];
         done = false;
         lightOn = false;
         countdownTimer = 15;
         reactionTimer = 0.0;
-        finalTime = 0.0;
+        finalTime = 0;
         attempt = 1;
+        mainText.SetText("Wait for the light to turn red, when it does press any button. Try to react as quickly as you can!");
+        subText.SetText("");
+        output = "";
     }
 
     // Update is called once per frame
@@ -52,14 +58,17 @@ public class ControllerInput : MonoBehaviour
                 reactionTimer += Time.deltaTime;
             }
 
-            
+
             if (OVRInput.GetDown(OVRInput.Button.Any))
             {
                 if (lightOn)
                 {
-                    //stop reaction timer
-                    finalTime = reactionTimer;
-                    subText.SetText("Attempt Number " + attempt + ": Reaction time = " + finalTime + " seconds");
+                    //stop reaction timer & convert seconds to milliseconds
+                    double milliseconds = reactionTimer * 1000;
+                    finalTime = (int) milliseconds;
+                    
+                    output += ("Attempt Number " + attempt + ": Reaction time = " + finalTime + " ms\n");
+                    subText.SetText(output);
 
                     //store time in array
                     times[attempt - 1] = finalTime;
@@ -70,7 +79,7 @@ public class ControllerInput : MonoBehaviour
                     //increment attempts
                     attempt += 1;
 
-                    if (attempt < 4)
+                    if (attempt <= ROUNDS)
                     {
                         //reset timers
                         resetTimers();
@@ -79,14 +88,19 @@ public class ControllerInput : MonoBehaviour
                     {
                         //calculating average
                         double avg = 0.0;
-                        for(int i = 0; i < times.Length; i++)
+                        for (int i = 0; i < times.Length; i++)
                         {
                             avg += times[i];
                         }
                         avg = avg / times.Length;
 
+                        //calculating median
+                        sortArray();
+                        int halfPoint = (int)Mathf.Floor(times.Length / 2);
+                        double median = times[halfPoint];
+
                         //displaying average
-                        mainText.SetText("Done. Average Reaction Time = " + avg + " seconds");
+                        mainText.SetText("Done.\nAverage: " + avg + " ms" + " \nMedian: " + median + "ms");
                         done = true;
                     }
 
@@ -94,13 +108,33 @@ public class ControllerInput : MonoBehaviour
                 else
                 {
                     //pre-emptive press of the button
-                    subText.SetText("Wait until the light turns red! Timer restarted");
+                    subText.SetText("Wait until the light turns red before pressing any button! Timer restarted for this attempt.");
                     countdownTimer = randomCountdown();
                 }
             }
 
         }
 
+    }
+
+    public void sortArray()
+    {
+        bool sorted = false;
+        int temp;
+        while (!sorted)
+        {
+            sorted = true;
+            for (int i = 0; i < times.Length - 1; i++)
+            {
+                if (times[i] > times[i + 1])
+                {
+                    temp = times[i];
+                    times[i] = times[i + 1];
+                    times[i + 1] = temp;
+                    sorted = false;
+                }
+            }
+        }
     }
 
     public void changeLightState(int i)
@@ -124,7 +158,7 @@ public class ControllerInput : MonoBehaviour
 
     public double randomCountdown()
     {
-        return Random.Range(5, 15);
+        return Random.Range(3, 15);
     }
 
     public void resetTimers()
