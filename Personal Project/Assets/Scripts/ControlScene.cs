@@ -4,7 +4,7 @@ using UnityEngine;
 using TMPro;
 
 
-public class ControllerInput : MonoBehaviour
+public class ControlScene : MonoBehaviour
 {
     //variables
     public static int ROUNDS = 5;
@@ -24,6 +24,10 @@ public class ControllerInput : MonoBehaviour
     public Material red;
     public TextMeshPro mainText;
     public TextMeshPro subText;
+    public TextMeshPro results;
+    public Canvas textCanvas;
+    public Canvas menu;
+    public GameObject uiHelpers;
 
 
     // Start is called before the first frame update
@@ -39,6 +43,9 @@ public class ControllerInput : MonoBehaviour
         mainText.SetText("Wait for the light to turn red, when it does press any button. Try to react as quickly as you can!");
         subText.SetText("");
         output = "";
+        results.SetText("");
+        menu.enabled = false;
+        uiHelpers.SetActive(false);
     }
 
     // Update is called once per frame
@@ -100,7 +107,7 @@ public class ControllerInput : MonoBehaviour
                         double median = times[halfPoint];
 
                         //displaying average
-                        mainText.SetText("Done.\nAverage: " + avg + " ms" + " \nMedian: " + median + "ms");
+                        results.SetText("Average: " + avg + " ms" + " \nMedian: " + median + "ms");
                         done = true;
                     }
 
@@ -113,6 +120,12 @@ public class ControllerInput : MonoBehaviour
                 }
             }
 
+        }
+        else
+        {
+            textCanvas.enabled = false;
+            menu.enabled = true;
+            uiHelpers.SetActive(true);
         }
 
     }
@@ -165,6 +178,16 @@ public class ControllerInput : MonoBehaviour
     {
         countdownTimer = randomCountdown();
         reactionTimer = 0.0;
+    }
+
+    public void restart()
+    {
+        Main.loadScene("ControlScene");
+    }
+
+    public void mainMenu()
+    {
+        Main.loadScene("MainMenu");
     }
 
 
