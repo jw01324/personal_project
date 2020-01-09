@@ -1,0 +1,132 @@
+fileFormatVersion: 2
+guid: 92613e4a04a16884db38227f9630585d
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: Car_A_Black_Plastic
+    100002: Car_A_Body
+    100004: Car_A_Brakes
+    100006: Car_A_Carbon_Fibre
+    100008: Car_A_Chrome
+    100010: Car_A_Floorpan
+    100012: Car_A_Glass3
+    100014: //RootNode
+    100016: Car_A_Headlamp_Glass
+    100018: Car_A_Interior
+    100020: Car_A_LicensePlate
+    100022: Car_A_Lights
+    100024: Car_A_Mirrors
+    100026: Car_A_Sunroof_Glass
+    100028: Car_A_Tyres
+    400000: Car_A_Black_Plastic
+    400002: Car_A_Body
+    400004: Car_A_Brakes
+    400006: Car_A_Carbon_Fibre
+    400008: Car_A_Chrome
+    400010: Car_A_Floorpan
+    400012: Car_A_Glass3
+    400014: //RootNode
+    400016: Car_A_Headlamp_Glass
+    400018: Car_A_Interior
+    400020: Car_A_LicensePlate
+    400022: Car_A_Lights
+    400024: Car_A_Mirrors
+    400026: Car_A_Sunroof_Glass
+    400028: Car_A_Tyres
+    2300000: Car_A_Black_Plastic
+    2300002: Car_A_Body
+    2300004: Car_A_Brakes
+    2300006: Car_A_Carbon_Fibre
+    2300008: Car_A_Chrome
+    2300010: Car_A_Floorpan
+    2300012: Car_A_Glass3
+    2300014: Car_A_Headlamp_Glass
+    2300016: Car_A_Interior
+    2300018: Car_A_LicensePlate
+    2300020: Car_A_Lights
+    2300022: Car_A_Mirrors
+    2300024: Car_A_Sunroof_Glass
+    2300026: Car_A_Tyres
+    3300000: Car_A_Black_Plastic
+    3300002: Car_A_Body
+    3300004: Car_A_Brakes
+    3300006: Car_A_Carbon_Fibre
+    3300008: Car_A_Chrome
+    3300010: Car_A_Floorpan
+    3300012: Car_A_Glass3
+    3300014: Car_A_Headlamp_Glass
+    3300016: Car_A_Interior
+    3300018: Car_A_LicensePlate
+    3300020: Car_A_Lights
+    3300022: Car_A_Mirrors
+    3300024: Car_A_Sunroof_Glass
+    3300026: Car_A_Tyres
+    4300000: Car_A_Body
+    4300002: Car_A_Carbon_Fibre
+    4300004: Car_A_Black_Plastic
+    4300006: Car_A_Interior
+    4300008: Car_A_Lights
+    4300010: Car_A_Mirrors
+    4300012: Car_A_Brakes
+    4300014: Car_A_Tyres
+    4300016: Car_A_LicensePlate
+    4300018: Car_A_Headlamp_Glass
+    4300020: Car_A_Glass3
+    4300022: Car_A_Floorpan
+    4300024: Car_A_Sunroof_Glass
+    4300026: Car_A_Chrome
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 1
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 10.0100002
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 

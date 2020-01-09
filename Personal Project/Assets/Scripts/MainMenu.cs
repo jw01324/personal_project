@@ -13,6 +13,7 @@ public class MainMenu : MonoBehaviour
     public void startTest()
     {
         //TODO: add method for starting test (scenes 1 - 4 with mixed variables)
+        Main.loadScene("Scene1");
     }
 
     public void sceneSelection()
