@@ -108,6 +108,24 @@ public class ControlScene : MonoBehaviour
 
                         //displaying average
                         results.SetText("Average: " + avg + " ms" + " \nMedian: " + median + "ms");
+
+                        Result result = new Result(output, avg, median);
+                        FileManager fm = new FileManager();
+
+                        bool isFileComplete = fm.createResultFile(result, 0);
+
+                        switch (isFileComplete) {
+                            case(true):
+                                subText.SetText("Data successfully sent to file.");
+                                break;
+                            case (false):
+                                subText.SetText("File saving failed.");
+                                break;
+                            default:
+                                //do nothing
+                                break;
+                        }
+
                         done = true;
                     }
 
