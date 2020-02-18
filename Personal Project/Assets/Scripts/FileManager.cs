@@ -4,7 +4,7 @@ using UnityEngine;
 using System.IO;
 using System;
 
-public class FileManager : MonoBehaviour
+public class FileManager 
 {
     string path = Application.persistentDataPath + "./Data/" + MainMenu.userID + "/";
 
@@ -26,7 +26,6 @@ public class FileManager : MonoBehaviour
 
         }catch(Exception e)
         {
-            print(e);
 
             return false;
         }

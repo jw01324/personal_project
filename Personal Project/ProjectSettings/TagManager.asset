@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Coordinate
+  - Car
+  - Waypoint
+  - Stop
   layers:
   - Default
   - TransparentFX

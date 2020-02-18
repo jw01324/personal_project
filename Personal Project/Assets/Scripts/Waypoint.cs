@@ -2,18 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Waypoint : MonoBehaviour
+public class Waypoint
 {
     //arraylist holding coordinates
-    public Coordinate[] coordinates;
+    private Coordinate[] coordinates;
     private int currentIndex = 0;
     bool setupDone;
 
-
-    void Start()
+    public Waypoint(int childCount)
     {
+        coordinates = new Coordinate[childCount];
+    }
 
-      
+
+    public void addCoordinate(int index, Coordinate c)
+    {
+        coordinates[index] = c;
     }
 
 

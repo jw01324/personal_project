@@ -5,24 +5,48 @@ using UnityEngine;
 public class Car : MonoBehaviour
 {
 
-    public Waypoint path;
+    private Waypoint path;
     private Coordinate currentCoordinate;
     private Rigidbody rb;
+    private bool crashed;
     private float speed;
-    private bool isFollowingPath;
+    public bool isFollowingPath;
     private bool islastCoordinate;
+    private bool isStopping;
+    private bool renderingRearLights;
+    public GameObject rearLights;
 
     // Start is called before the first frame update
     void Start()
     {
+        crashed = false;
+        isStopping = false;
         speed = 0;
-        isFollowingPath = false;
         islastCoordinate = false;
         rb = gameObject.GetComponent<Rigidbody>();
 
-        if (gameObject.tag == "Player")
+        GameObject waypoint = GameObject.FindGameObjectWithTag("Waypoint");
+        int childCount = waypoint.transform.childCount;
+        path = new Waypoint(childCount);
+
+        for (int i = 0; i < childCount; i++)
         {
-            isFollowingPath = true;
+            //adding each coordinate to the waypoint
+            path.addCoordinate(i, waypoint.transform.GetChild(i).GetComponent<Coordinate>());
+        }
+
+        //don't want to waste computational power on rendering lights on the back of the users car that they cannot see
+        if (rearLights != null)
+        {
+            renderingRearLights = true;
+        }
+        else
+        {
+            renderingRearLights = false;
+        }
+
+        if (isFollowingPath)
+        {
             currentCoordinate = path.getCurrentCoordinate();
 
         }
@@ -32,43 +56,64 @@ public class Car : MonoBehaviour
     void Update()
     {
 
+        Vector3 pos = currentCoordinate.getPosition();
+
         if (isFollowingPath)
         {
-            Vector3 pos = currentCoordinate.getPosition();
-
-            print(speed);
-
-            if(speed < currentCoordinate.speed)
+            if (!isStopping)
             {
-             
-                speed += 0.05f;
-
-                if(speed > currentCoordinate.speed)
-                {
-                    speed = currentCoordinate.speed;
-                }
-               
-            } 
-
-            if(speed > currentCoordinate.speed)
-            {
-              
-                speed -= 0.05f;
 
                 if (speed < currentCoordinate.speed)
                 {
-                    speed = currentCoordinate.speed;
+
+                    speed += 0.05f;
+
+                    if (speed > currentCoordinate.speed)
+                    {
+                        speed = currentCoordinate.speed;
+                    }
+
+                }
+
+                if (speed > currentCoordinate.speed)
+                {
+                    if (renderingRearLights)
+                    {
+                        rearLights.GetComponent<Light>().intensity = 5;
+                    }
+
+                    speed -= 0.05f;
+
+                    if (speed < currentCoordinate.speed)
+                    {
+                        speed = currentCoordinate.speed;
+
+                        if (renderingRearLights)
+                        {
+                            rearLights.GetComponent<Light>().intensity = 0;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (speed > 0)
+                {
+                    speed -= 0.1f;
+                }
+                else
+                {
+                    speed = 0;
                 }
             }
 
-            print(speed);
-
             var q = Quaternion.LookRotation(pos - transform.position);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, q, 5f * Time.deltaTime);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, q, 100f * Time.deltaTime);
 
             // move towards the target
             transform.position = Vector3.MoveTowards(transform.position, pos, speed * Time.deltaTime);
         }
+
     }
 
     public void move(float speed, Vector3 direction)
@@ -78,14 +123,11 @@ public class Car : MonoBehaviour
 
     public void stop()
     {
-        //while object is still moving
-        while (rb.velocity.magnitude > 0)
-        {
-            //slow car down
-            rb.AddForce(-rb.GetPointVelocity(gameObject.transform.position) * 2);
-        }
-
+        //TODO: Stop timer
+        isStopping = true;
+        
     }
+
 
     private void OnTriggerEnter(Collider col)
     {
@@ -106,12 +148,44 @@ public class Car : MonoBehaviour
                 currentCoordinate = path.getNextCoordinate();
 
             }
-            else
+
+            if (islastCoordinate)
             {
-                //do nothing
+                isFollowingPath = false;
             }
+           
         }
 
+        if (col.tag == "Car")
+        {
+            print("end scene");
+            crashed = true;
+            Main.stopScene();
+
+        }
+
+        if(col.tag == "Stop" & gameObject.tag == "Car")
+        {
+            
+            StartCoroutine(StopCar());
+        }
+
+    }
+
+    IEnumerator StopCar()
+    {
+        int sec = Random.Range(1, 10);
+        print("Seconds: " + sec);
+
+        yield return new WaitForSeconds(sec);
+
+        print("STOPPING");
+        if (renderingRearLights)
+        {
+            rearLights.GetComponent<Light>().intensity = 5;
+        }
+        isStopping = true;
+        //TODO: start reaction timer
 
     }
 
