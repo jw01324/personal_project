@@ -1,11 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 
 public class Controller : MonoBehaviour
 {
-    public TextMeshProUGUI text;
+    //whether I am using my keyboard in testing mode or whether the inputs are for the oculus
+    public bool oculusInputs;
 
     private OVRInput.Button selectionButton = OVRInput.Button.PrimaryIndexTrigger;
     private OVRInput.Button responseButton = OVRInput.Button.SecondaryIndexTrigger;
@@ -16,48 +16,79 @@ public class Controller : MonoBehaviour
     private bool isTrackingOn;
     private bool isOverMenuItem;
 
+    private SatNav satnav;
+    
+
     // Start is called before the first frame update
     void Start()
     {
         isTrackingOn = false;
         isOverMenuItem = false;
+        satnav = GameObject.FindGameObjectWithTag("SatNav").GetComponent<SatNav>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        //right trigger pressed
-        if (OVRInput.GetDown(responseButton))
+        if (!oculusInputs)
         {
-            text.SetText("right trigger");
-
-            GameObject.FindGameObjectWithTag("Player").GetComponent<Car>().stop();
-        }
-
-        //left trigger pressed
-        if (OVRInput.GetDown(selectionButton))
-        {
-            text.SetText("left trigger");
-
-            if (isTrackingOn & isOverMenuItem)
+            if (Input.GetKeyDown(KeyCode.Space))
             {
-                //TODO: interact with menu
+                GameObject.FindGameObjectWithTag("Player").GetComponent<Car>().stop();
+            }
+
+            if (Input.GetKeyDown(KeyCode.A))
+            {
+                //left
+                satnav.checkInputDirectionCorrect(0);
+            }
+
+            if (Input.GetKeyDown(KeyCode.D))
+            {
+                //right
+                satnav.checkInputDirectionCorrect(1);
+            }
+
+            if (Input.GetKeyDown(KeyCode.W))
+            {
+                //up
+                satnav.checkInputDirectionCorrect(2);
             }
         }
-
-        if (OVRInput.GetDown(up))
+        else
         {
-            text.SetText("up on thumbstick");
-        }
+            //right trigger pressed
+            if (OVRInput.GetDown(responseButton))
+            {
+                GameObject.FindGameObjectWithTag("Player").GetComponent<Car>().stop();
+            }
 
-        if (OVRInput.GetDown(left))
-        {
-            text.SetText("left on thumbstick");
-        }
+            //left trigger pressed
+            if (OVRInput.GetDown(selectionButton))
+            {
+                if (isTrackingOn & isOverMenuItem)
+                {
+                    //TODO: interact with menu
+                }
+            }
 
-        if (OVRInput.GetDown(right))
-        {
-            text.SetText("right on thumbstick");
+            if (OVRInput.GetDown(left))
+            {
+                //left
+                satnav.checkInputDirectionCorrect(0);
+            }
+
+            if (OVRInput.GetDown(right))
+            {
+                //right
+                satnav.checkInputDirectionCorrect(1);
+            }
+
+            if (OVRInput.GetDown(up))
+            {
+                //up
+                satnav.checkInputDirectionCorrect(2);
+            }
         }
 
     }

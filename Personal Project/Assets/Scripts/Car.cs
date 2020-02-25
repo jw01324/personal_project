@@ -58,60 +58,64 @@ public class Car : MonoBehaviour
 
         Vector3 pos = currentCoordinate.getPosition();
 
-        if (isFollowingPath)
+        if (!crashed)
         {
-            if (!isStopping)
+
+            if (isFollowingPath)
             {
-
-                if (speed < currentCoordinate.speed)
+                if (!isStopping)
                 {
-
-                    speed += 0.05f;
-
-                    if (speed > currentCoordinate.speed)
-                    {
-                        speed = currentCoordinate.speed;
-                    }
-
-                }
-
-                if (speed > currentCoordinate.speed)
-                {
-                    if (renderingRearLights)
-                    {
-                        rearLights.GetComponent<Light>().intensity = 5;
-                    }
-
-                    speed -= 0.05f;
 
                     if (speed < currentCoordinate.speed)
                     {
-                        speed = currentCoordinate.speed;
 
+                        speed += 0.05f;
+
+                        if (speed > currentCoordinate.speed)
+                        {
+                            speed = currentCoordinate.speed;
+                        }
+
+                    }
+
+                    if (speed > currentCoordinate.speed)
+                    {
                         if (renderingRearLights)
                         {
-                            rearLights.GetComponent<Light>().intensity = 0;
+                            rearLights.GetComponent<Light>().intensity = 5;
+                        }
+
+                        speed -= 0.05f;
+
+                        if (speed < currentCoordinate.speed)
+                        {
+                            speed = currentCoordinate.speed;
+
+                            if (renderingRearLights)
+                            {
+                                rearLights.GetComponent<Light>().intensity = 0;
+                            }
                         }
                     }
                 }
-            }
-            else
-            {
-                if (speed > 0)
-                {
-                    speed -= 0.1f;
-                }
                 else
                 {
-                    speed = 0;
+                    if (speed > 0)
+                    {
+                        speed -= speed * 0.1f;
+                    }
+                    else
+                    {
+                        speed = 0;
+                    }
                 }
+
+                var q = Quaternion.LookRotation(pos - transform.position);
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, q, 100f * Time.deltaTime);
+
+                // move towards the target
+                transform.position = Vector3.MoveTowards(transform.position, pos, speed * Time.deltaTime);
             }
-
-            var q = Quaternion.LookRotation(pos - transform.position);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, q, 100f * Time.deltaTime);
-
-            // move towards the target
-            transform.position = Vector3.MoveTowards(transform.position, pos, speed * Time.deltaTime);
         }
 
     }
@@ -134,7 +138,8 @@ public class Car : MonoBehaviour
         if (col.tag == "Coordinate")
         {
 
-            print("collided");
+            //print(gameObject.name + " collided with " + col.name);
+
             if (path.getCurrent() + 1 >= path.getLength())
             {
                 //last coordinate, no need to get more

@@ -2,20 +2,47 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
-public class Main
+public class Main : MonoBehaviour
 {
 
     private Car player;
     //private Car incidentCar;
+    public TextMeshProUGUI feedbackText;
+    private bool isTiming;
     private float timer;
     private bool done;
     private bool inMenu;
     private int attempts;
-    public static FileManager fm = new FileManager();
-    private Result result;
+    //public static FileManager fm = new FileManager();
 
-    
+
+    void Start()
+    {
+        isTiming = false;
+        timer = 0;
+    }
+
+    void Update()
+    {
+        if (isTiming)
+        {
+            timer += Time.deltaTime;
+        }
+    }
+
+    public void startTimer()
+    {
+        isTiming = true;
+    }
+
+    public void stopTimer()
+    {
+        isTiming = false;
+
+        //Result result = new Result(SceneManager.GetActiveScene().name, );
+}
 
     public static void stopScene()
     {
@@ -42,11 +69,12 @@ public class Main
 
     }
 
-    public static void addResult()
+    public static void addResult(Result result)
     {
 
     }
 
+    /**
     public static void saveTestResultToFile(Result result)
     {
         fm.createResultFile(result, 0);
@@ -56,4 +84,5 @@ public class Main
     { 
         fm.createResultFile(result, 1);
     }
+    */
 }
