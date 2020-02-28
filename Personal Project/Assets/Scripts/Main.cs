@@ -10,8 +10,8 @@ public class Main : MonoBehaviour
     private Car player;
     //private Car incidentCar;
     public TextMeshProUGUI feedbackText;
-    private bool isTiming;
-    private float timer;
+    private static bool isTiming;
+    private static float timer;
     private bool done;
     private bool inMenu;
     private int attempts;
@@ -32,17 +32,23 @@ public class Main : MonoBehaviour
         }
     }
 
-    public void startTimer()
+    public static void startTimer()
     {
         isTiming = true;
     }
 
-    public void stopTimer()
+    public static float stopTimer()
     {
         isTiming = false;
+        float finalTime = timer;
+        timer = 0;
+        return finalTime;
+    }
 
-        //Result result = new Result(SceneManager.GetActiveScene().name, );
-}
+    public static float getTimer()
+    {
+        return timer;
+    }
 
     public static void stopScene()
     {

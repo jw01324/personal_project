@@ -9,18 +9,28 @@ public class Car : MonoBehaviour
     private Coordinate currentCoordinate;
     private Rigidbody rb;
     private bool crashed;
+    public static float lightIntensity = 15f;
     private float speed;
     public bool isFollowingPath;
     private bool islastCoordinate;
     private bool isStopping;
     private bool renderingRearLights;
-    public GameObject rearLights;
+    private bool hasBraked;
+    private bool nearEnd;
+    private static bool needToStop;
+    public GameObject[] rearLights;
+    public static int incorrectStops;
+    public static int correctStops;
 
     // Start is called before the first frame update
     void Start()
     {
+        incorrectStops = 0;
+        correctStops = 0;
         crashed = false;
+        hasBraked = false;
         isStopping = false;
+        needToStop = false;
         speed = 0;
         islastCoordinate = false;
         rb = gameObject.GetComponent<Rigidbody>();
@@ -35,21 +45,12 @@ public class Car : MonoBehaviour
             path.addCoordinate(i, waypoint.transform.GetChild(i).GetComponent<Coordinate>());
         }
 
-        //don't want to waste computational power on rendering lights on the back of the users car that they cannot see
-        if (rearLights != null)
-        {
-            renderingRearLights = true;
-        }
-        else
-        {
-            renderingRearLights = false;
-        }
-
         if (isFollowingPath)
         {
             currentCoordinate = path.getCurrentCoordinate();
-
         }
+
+
     }
 
     // Update is called once per frame
@@ -69,6 +70,7 @@ public class Car : MonoBehaviour
                     if (speed < currentCoordinate.speed)
                     {
 
+
                         speed += 0.05f;
 
                         if (speed > currentCoordinate.speed)
@@ -80,20 +82,49 @@ public class Car : MonoBehaviour
 
                     if (speed > currentCoordinate.speed)
                     {
-                        if (renderingRearLights)
+
+                        if (gameObject.tag != "Player" & !needToStop)
                         {
-                            rearLights.GetComponent<Light>().intensity = 5;
+                            needToStop = true;
+                            Main.startTimer();
+                        }
+                        
+                        if(gameObject.tag == "Player" & needToStop & !hasBraked)
+                        {
+                            print("test");
+                            hasBraked = false;
+                        }
+                     
+                        foreach(GameObject light in rearLights)
+                        {
+                            light.GetComponent<Light>().intensity = lightIntensity;
                         }
 
-                        speed -= 0.05f;
+                            speed -= 0.05f;
 
                         if (speed < currentCoordinate.speed)
                         {
                             speed = currentCoordinate.speed;
 
-                            if (renderingRearLights)
+                            if (gameObject.tag != "Player")
                             {
-                                rearLights.GetComponent<Light>().intensity = 0;
+                                needToStop = false;
+                                if(Main.getTimer() != 0)
+                                {
+                                    Main.stopTimer();
+                                    incorrectStops++;
+                                    print("Correct: " + correctStops + ", Incorrect: " + incorrectStops);
+                                }
+                            }
+
+                            if(gameObject.tag == "Player")
+                            {
+                                hasBraked = false;
+                            }
+
+                            foreach (GameObject light in rearLights)
+                            {
+                                light.GetComponent<Light>().intensity = 0;
                             }
                         }
                     }
@@ -125,10 +156,45 @@ public class Car : MonoBehaviour
         transform.position += direction * Time.deltaTime * speed;
     }
 
+    public void readyToBrake()
+    {
+        hasBraked = false;
+    }
+
     public void stop()
     {
+
+        if (needToStop & !hasBraked)
+        {
+            if (nearEnd)
+            {
+                isStopping = true;
+            }
+            
+            correctStops++;
+            float time = Main.stopTimer() * 1000;
+            print("Reaction Time (ms): " + time);
+            hasBraked = true;
+
+        }
+        else if (needToStop & hasBraked)
+        {
+            //do nothing as always inputted brakes, but not incorrect as the car in front is still braking
+        }
+        else
+        {
+            //no indication to stop, hence incorrect
+            incorrectStops++;
+        }
+
+
+        print("Correct: " + correctStops + ", Incorrect: " + incorrectStops);
         //TODO: Stop timer
-        isStopping = true;
+
+        if (nearEnd )
+        {
+            isStopping = true;
+        }
         
     }
 
@@ -171,25 +237,38 @@ public class Car : MonoBehaviour
 
         if(col.tag == "Stop" & gameObject.tag == "Car")
         {
-            
+
             StartCoroutine(StopCar());
+        }
+
+        if (col.tag == "Stop" & gameObject.tag == "Player")
+        {
+            nearEnd = true;
         }
 
     }
 
     IEnumerator StopCar()
     {
-        int sec = Random.Range(1, 10);
+        foreach (GameObject light in rearLights)
+        {
+            light.GetComponent<Light>().intensity = 0;
+        }
+
+        int sec = Random.Range(5, 10);
         print("Seconds: " + sec);
 
         yield return new WaitForSeconds(sec);
 
         print("STOPPING");
-        if (renderingRearLights)
+
+        foreach (GameObject light in rearLights)
         {
-            rearLights.GetComponent<Light>().intensity = 5;
+            light.GetComponent<Light>().intensity = lightIntensity;
         }
+
         isStopping = true;
+        needToStop = true;
         //TODO: start reaction timer
 
     }

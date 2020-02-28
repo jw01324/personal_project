@@ -9,7 +9,7 @@ public class SatNav : MonoBehaviour
     public int intType;
     private bool arrowVisable;
     private float countdownTimer;
-    public static float countdownTime = 2f;
+    public static float countdownTime = 3f;
     private bool startCountdown;
     public int correctAnswers;
     public int incorrectAnswers;
@@ -17,6 +17,9 @@ public class SatNav : MonoBehaviour
     public enum Direction { LEFT, RIGHT, UP};
     private Type type;
     private Direction direction;
+    public AudioSource leftAudio;
+    public AudioSource rightAudio;
+    public AudioSource forwardAudio;
 
 
     private Transform arrow;
@@ -67,8 +70,8 @@ public class SatNav : MonoBehaviour
             if (type == Type.AUDIOVISUAL | type == Type.VISUAL)
             {
 
-                    int viewtime = (int)countdownTimer + 1;
-                    text.SetText("Time left: " + viewtime.ToString());
+                int viewtime = (int)countdownTimer + 1;
+                text.SetText("Time left: " + viewtime.ToString());
 
                 if (countdownTimer < 0)
                 {
@@ -136,9 +139,11 @@ public class SatNav : MonoBehaviour
 
             print("display arrow");
             arrow.GetComponent<Image>().enabled = true;
-            
 
-        }else if(type == Type.AUDIOVISUAL | type == Type.AUDIO)
+
+        }
+
+        if (type == Type.AUDIOVISUAL | type == Type.AUDIO)
         {
             //audio or audiovisual
 
@@ -149,12 +154,15 @@ public class SatNav : MonoBehaviour
             switch (r)
             {
                 case 0:
+                    leftAudio.Play();
                     //play "left" voice
                     break;
                 case 1:
+                    rightAudio.Play();
                     //play "right" voice
                     break;
                 case 2:
+                    forwardAudio.Play();
                     //play "up" voice
                     break;
             }
@@ -164,6 +172,8 @@ public class SatNav : MonoBehaviour
         }
 
         startCountdown = true;
+
+
 
     }
 
