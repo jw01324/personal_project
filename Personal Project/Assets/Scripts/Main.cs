@@ -9,10 +9,9 @@ public class Main : MonoBehaviour
 
     private Car player;
     //private Car incidentCar;
-    public TextMeshProUGUI feedbackText;
     private static bool isTiming;
     private static float timer;
-    private bool done;
+    private static bool done;
     private bool inMenu;
     private int attempts;
     //public static FileManager fm = new FileManager();
@@ -22,14 +21,20 @@ public class Main : MonoBehaviour
     {
         isTiming = false;
         timer = 0;
+        done = false;
+
     }
 
     void Update()
     {
-        if (isTiming)
+        if (!done)
         {
-            timer += Time.deltaTime;
+            if (isTiming)
+            {
+                timer += Time.deltaTime;
+            }
         }
+       
     }
 
     public static void startTimer()
@@ -50,10 +55,22 @@ public class Main : MonoBehaviour
         return timer;
     }
 
+    public static bool getState()
+    {
+        return done;
+    }
+
     public static void stopScene()
     {
-        Time.timeScale = 0;
-        //TODO: bring up menu
+        //Time.timeScale = 0;
+        done = true;
+        print("SCENE OVER");
+
+        TextMeshProUGUI resultsText = GameObject.FindGameObjectWithTag("EndScreen").transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+        
+        //TODO: Display result
+        resultsText.SetText("DONE.\nHold both triggers to continue.");
+
     }
 
     public static void restartScene()
@@ -73,6 +90,25 @@ public class Main : MonoBehaviour
     {
         SceneManager.LoadScene(sceneName);
 
+    }
+
+    public static void loadNextScene()
+    {
+        int index = SceneManager.GetActiveScene().buildIndex + 1;
+
+        try
+        {
+            //if scene exists, load it
+            if (SceneManager.GetSceneAt(index) != null)
+            {
+                SceneManager.LoadScene(index);
+            }
+        }
+        catch 
+        {
+            //if not then load the main menu
+            SceneManager.LoadScene(0);
+        }
     }
 
     public static void addResult(Result result)

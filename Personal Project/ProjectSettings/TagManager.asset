@@ -9,6 +9,8 @@ TagManager:
   - Waypoint
   - Stop
   - SatNav
+  - EndScreen
+  - Axis
   layers:
   - Default
   - TransparentFX

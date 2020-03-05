@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class Car : MonoBehaviour
 {
-
+    public float accelerationVariable = 0.1f;
+    public float acceleration = 0;
     private Waypoint path;
     private Coordinate currentCoordinate;
     private Rigidbody rb;
+    private Transform steeringAxis;
     private bool crashed;
     public static float lightIntensity = 15f;
     private float speed;
@@ -25,6 +27,7 @@ public class Car : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
         incorrectStops = 0;
         correctStops = 0;
         crashed = false;
@@ -34,6 +37,8 @@ public class Car : MonoBehaviour
         speed = 0;
         islastCoordinate = false;
         rb = gameObject.GetComponent<Rigidbody>();
+
+        steeringAxis = transform.GetChild(0);
 
         GameObject waypoint = GameObject.FindGameObjectWithTag("Waypoint");
         int childCount = waypoint.transform.childCount;
@@ -59,7 +64,7 @@ public class Car : MonoBehaviour
 
         Vector3 pos = currentCoordinate.getPosition();
 
-        if (!crashed)
+        if (!Main.getState())
         {
 
             if (isFollowingPath)
@@ -70,12 +75,13 @@ public class Car : MonoBehaviour
                     if (speed < currentCoordinate.speed)
                     {
 
-
-                        speed += 0.05f;
+                        speed += accelerate(acceleration);
+                        //speed += 0.05f;
 
                         if (speed > currentCoordinate.speed)
                         {
                             speed = currentCoordinate.speed;
+                            acceleration = 0;
                         }
 
                     }
@@ -100,11 +106,14 @@ public class Car : MonoBehaviour
                             light.GetComponent<Light>().intensity = lightIntensity;
                         }
 
-                            speed -= 0.05f;
+                        //speed -= 0.1f;
+                        speed -= accelerate(acceleration);
+                        print(gameObject.tag + ": " + speed);
 
-                        if (speed < currentCoordinate.speed)
+                        if (speed <= currentCoordinate.speed)
                         {
                             speed = currentCoordinate.speed;
+                            acceleration = 0;
 
                             if (gameObject.tag != "Player")
                             {
@@ -131,25 +140,48 @@ public class Car : MonoBehaviour
                 }
                 else
                 {
-                    if (speed > 0)
+                    print(gameObject.name + ": " + speed);
+
+                    if (crashed)
                     {
-                        speed -= speed * 0.1f;
+                        Main.stopScene();
                     }
                     else
                     {
-                        speed = 0;
+                        if (speed > 0)
+                        {
+                            speed -= accelerate(acceleration);
+                        }
+                        else
+                        {
+                           
+                            speed = 0;
+
+                            if (gameObject.tag == "Player")
+                            {
+                                Main.stopScene();
+                            }
+                        }
                     }
                 }
 
-                var q = Quaternion.LookRotation(pos - transform.position);
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, q, 100f * Time.deltaTime);
+                var q = Quaternion.LookRotation(pos - steeringAxis.position);
+                transform.rotation = Quaternion.RotateTowards(steeringAxis.rotation, q, (speed * 8) * Time.deltaTime);
 
                 // move towards the target
-                transform.position = Vector3.MoveTowards(transform.position, pos, speed * Time.deltaTime);
+                transform.Translate(Vector3.forward * speed * Time.deltaTime);
+
             }
         }
 
     }
+
+    public float accelerate(float currentAcceleration)
+    {
+        currentAcceleration += accelerationVariable;
+        return currentAcceleration;
+    }
+
 
     public void move(float speed, Vector3 direction)
     {
@@ -190,11 +222,6 @@ public class Car : MonoBehaviour
 
         print("Correct: " + correctStops + ", Incorrect: " + incorrectStops);
         //TODO: Stop timer
-
-        if (nearEnd )
-        {
-            isStopping = true;
-        }
         
     }
 
@@ -250,6 +277,8 @@ public class Car : MonoBehaviour
 
     IEnumerator StopCar()
     {
+        needToStop = false;
+
         foreach (GameObject light in rearLights)
         {
             light.GetComponent<Light>().intensity = 0;
@@ -269,7 +298,7 @@ public class Car : MonoBehaviour
 
         isStopping = true;
         needToStop = true;
-        //TODO: start reaction timer
+        Main.startTimer();
 
     }
 

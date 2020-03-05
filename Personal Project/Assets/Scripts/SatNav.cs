@@ -61,48 +61,60 @@ public class SatNav : MonoBehaviour
 
     void Update()
     {
-        arrowVisable = arrow.GetComponent<Image>().enabled;
-
-        if (startCountdown)
+        if (!Main.getState())
         {
-            countdownTimer -= Time.deltaTime;
+            arrowVisable = arrow.GetComponent<Image>().enabled;
 
-            if (type == Type.AUDIOVISUAL | type == Type.VISUAL)
+            if (startCountdown)
             {
+                countdownTimer -= Time.deltaTime;
 
-                int viewtime = (int)countdownTimer + 1;
-                text.SetText("Time left: " + viewtime.ToString());
+                if (type == Type.AUDIOVISUAL | type == Type.VISUAL)
+                {
+
+                    int viewtime = (int)countdownTimer + 1;
+                    text.SetText("Time left: " + viewtime.ToString());
+
+                    if (countdownTimer < 0)
+                    {
+                        //failed to interact in time
+                        text.SetText("");
+                        arrow.GetComponent<Image>().enabled = false;
+
+                    }
+
+                }
+
+                if (type == Type.AUDIO | type == Type.AUDIOVISUAL)
+                {
+                    if (countdownTimer < 0)
+                    {
+                        //play fail audio
+                    }
+                }
 
                 if (countdownTimer < 0)
                 {
                     //failed to interact in time
-                    text.SetText("");
-                    arrow.GetComponent<Image>().enabled = false;
-
+                    incorrectAnswers++;
+                    countdownTimer = countdownTime;
+                    StartCoroutine(pickDirection());
                 }
 
             }
-
-            if (type == Type.AUDIO | type == Type.AUDIOVISUAL)
+            else
             {
-                if (countdownTimer < 0)
-                {
-                    //play fail audio
-                }
-            }
-
-            if (countdownTimer < 0)
-            {
-                //failed to interact in time
-                incorrectAnswers++;
                 countdownTimer = countdownTime;
-                StartCoroutine(pickDirection());
-            }
 
+            }
         }
         else
         {
-            countdownTimer = countdownTime;
+            //don't want to disable the main model but everything else needs to be disabled (screen, text, etc.)
+            for (int i = 1; i < transform.childCount; i++)
+            {
+                transform.GetChild(i).gameObject.SetActive(false);
+            }
         }
     }
 
@@ -114,67 +126,112 @@ public class SatNav : MonoBehaviour
 
         yield return new WaitForSeconds(sec);
 
-        int r = Random.Range(0, 3);
-
-        direction = (Direction)r;
-
-        print(direction);
-
-        //visual OR audiovisual
-
-        if (type == Type.AUDIOVISUAL | type == Type.VISUAL)
+        if (!Main.getState())
         {
-            switch (r)
+
+            int r = Random.Range(0, 3);
+
+            direction = (Direction)r;
+
+            print(direction);
+
+
+            if (type == Type.AUDIO)
             {
-                case 0:
-                    arrow.localRotation = left;
-                    break;
-                case 1:
-                    arrow.localRotation = right;
-                    break;
-                case 2:
-                    arrow.localRotation = up;
-                    break;
-            }
+                //audio
 
-            print("display arrow");
-            arrow.GetComponent<Image>().enabled = true;
+                /*
+                 * PLAY AUDIO
+                 */
 
+                switch (r)
+                {
+                    case 0:
+                        leftAudio.Play();
+                        //play "left" voice
+                        break;
+                    case 1:
+                        rightAudio.Play();
+                        //play "right" voice
+                        break;
+                    case 2:
+                        forwardAudio.Play();
+                        //play "up" voice
+                        break;
+                }
+
+                print("play audio");
+
+            }else if (type == Type.VISUAL)
+            {
+                //visual 
+
+                switch (r)
+                {
+                    case 0:
+                        arrow.localRotation = left;
+                        break;
+                    case 1:
+                        arrow.localRotation = right;
+                        break;
+                    case 2:
+                        arrow.localRotation = up;
+                        break;
+                }
+
+                print("display arrow");
+                arrow.GetComponent<Image>().enabled = true;
+
+            }else if (type == Type.AUDIOVISUAL)
+            {
+                //audiovisual 
+
+                switch (r)
+                {
+                    case 0:
+                        arrow.localRotation = left;
+                        break;
+                    case 1:
+                        arrow.localRotation = right;
+                        break;
+                    case 2:
+                        arrow.localRotation = up;
+                        break;
+                }
+
+                print("display arrow");
+                arrow.GetComponent<Image>().enabled = true;
+
+                /*
+                 * PLAY AUDIO
+                 */
+
+                switch (r)
+                {
+                    case 0:
+                        leftAudio.Play();
+                        //play "left" voice
+                        break;
+                    case 1:
+                        rightAudio.Play();
+                        //play "right" voice
+                        break;
+                    case 2:
+                        forwardAudio.Play();
+                        //play "up" voice
+                        break;
+                }
+
+                print("play audio");
+            }      
+
+            startCountdown = true;
 
         }
-
-        if (type == Type.AUDIOVISUAL | type == Type.AUDIO)
+        else
         {
-            //audio or audiovisual
-
-            /*
-             * PLAY AUDIO
-             */
-
-            switch (r)
-            {
-                case 0:
-                    leftAudio.Play();
-                    //play "left" voice
-                    break;
-                case 1:
-                    rightAudio.Play();
-                    //play "right" voice
-                    break;
-                case 2:
-                    forwardAudio.Play();
-                    //play "up" voice
-                    break;
-            }
-
-            print("play audio");
-        
+            //do nothing as it is over
         }
-
-        startCountdown = true;
-
-
-
     }
 
     public bool checkInputDirectionCorrect(int input)
