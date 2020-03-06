@@ -2,18 +2,45 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Waypoint
+public class Waypoint : MonoBehaviour
 {
     //arraylist holding coordinates
     private Coordinate[] coordinates;
-    private int currentIndex = 0;
-    bool setupDone;
+    public Color colour;
 
-    public Waypoint(int childCount)
+    void Start()
     {
-        coordinates = new Coordinate[childCount];
+
+        coordinates = new Coordinate[transform.childCount];
+
+        for(int i = 0; i < transform.childCount; i++)
+        {
+            addCoordinate(i, transform.GetChild(i).GetComponent<Coordinate>());
+        }
+
     }
 
+    /*
+     * Method for drawing the path (just to help me visually see the path in the editor when I'm creating it or debugging)
+     */ 
+    void OnDrawGizmos()
+    {
+        Gizmos.color = colour;
+
+        for(int i = 1; i < transform.childCount; i++)
+        {
+            Vector3 currentCoordinate = transform.GetChild(i).position;
+            Vector3 previousCoordinate = transform.GetChild(i-1).position;
+
+            Gizmos.DrawLine(previousCoordinate, currentCoordinate);
+            Gizmos.DrawWireSphere(previousCoordinate, 1);
+
+            if(i == transform.childCount - 1)
+            {
+                Gizmos.DrawWireSphere(currentCoordinate, 1);
+            }
+        }
+    }
 
     public void addCoordinate(int index, Coordinate c)
     {
@@ -21,15 +48,9 @@ public class Waypoint
     }
 
 
-    public Coordinate getNextCoordinate()
+    public Coordinate getCoordinate(int index)
     {
-        currentIndex++;
-        return coordinates[currentIndex];
-    }
-
-    public Coordinate getCurrentCoordinate()
-    {
-        return coordinates[currentIndex];
+        return coordinates[index];
     }
 
     public Coordinate[] getList()
@@ -40,11 +61,6 @@ public class Waypoint
     public int getLength()
     {
         return coordinates.Length;
-    }
-
-    public int getCurrent()
-    {
-        return currentIndex;
     }
     
 }
