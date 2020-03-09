@@ -62,7 +62,7 @@ public class Main : MonoBehaviour
 
     public static void stopScene()
     {
-        //Time.timeScale = 0;
+
         done = true;
         print("SCENE OVER");
 

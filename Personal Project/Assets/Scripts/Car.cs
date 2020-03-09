@@ -10,10 +10,10 @@ public class Car : MonoBehaviour
     private Waypoint path;
     private Coordinate currentCoordinate;
     private Rigidbody rb;
-    private bool crashed;
-    public static float lightIntensity = 15f;
+    public static float lightIntensity = 5f;
     private float currentSpeed;
-    private float speed;
+    private float maxSpeed;
+    private float minSpeed;
     public bool isFollowingPath;
     private int currentIndex;
     private bool isStopping;
@@ -50,27 +50,30 @@ public class Car : MonoBehaviour
         frameCount = 0;
         incorrectStops = 0;
         correctStops = 0;
-        crashed = false;
         hasBraked = false;
         isStopping = false;
         needToStop = false;
-        speed = 0;
+
+        float mphConversion = 2.23694f;
+        minSpeed = 15 / mphConversion;
+        maxSpeed = 30 / mphConversion;
         currentSpeed = 0;
         rb = gameObject.GetComponent<Rigidbody>();
         rb.centerOfMass = centerOfMass.localPosition;
 
         maxSteeringAngle = 45; //degrees
         maxTorque = 150f;
-        maxBrakingTorque = 200f;
+        maxBrakingTorque = 100000f;
         isBraking = false;
 
         previousPosition = transform.position;
-        
+
         path = GameObject.FindGameObjectWithTag("Waypoint").GetComponent<Waypoint>();
+        print(gameObject.tag + ":" + path.getLength());
+        currentIndex = 0;
 
         if (isFollowingPath)
         {
-            currentIndex = 0;
             currentCoordinate = path.getCoordinate(currentIndex);
         }
 
@@ -82,12 +85,63 @@ public class Car : MonoBehaviour
 
         if (!Main.getState())
         {
+            //calculating current speed
+            //currentSpeed = 2 * Mathf.PI * FL.radius * FL.rpm * 60 / 1000;
+            currentSpeed = (transform.position - previousPosition).magnitude / Time.deltaTime;
+            previousPosition = transform.position;
+
             if (isFollowingPath)
             {
-                calculateSteeringAngle();
-                move();
+                if (!isStopping)
+                {
+                    calculateSteeringAngle();
+                    move();
+                }
+                else
+                {
+                    //resetting motor torque to zero
+                    FL.motorTorque = 0;
+                    FR.motorTorque = 0;
+
+                    FL.brakeTorque = maxBrakingTorque;
+                    FR.brakeTorque = maxBrakingTorque;
+                    RL.brakeTorque = maxBrakingTorque;
+                    RR.brakeTorque = maxBrakingTorque;
+
+                   
+                    if (currentSpeed <= 0)
+                    {
+                        if (gameObject.tag == "Player")
+                        {
+                            print("Didn't crash");
+                            Main.stopScene();
+                        }
+                        else
+                        {
+                            //this code can be used to measure the time it takes for the car to come to a complete stop
+                            //(need to disable the car script on the player car to avoid collision)
+                            if (Main.getTimer() > 0)
+                            {
+                                print("STOPPING TIME: " + Main.stopTimer());
+                            }
+                        }
+
+
+                    }
+                   
+                }
 
             }
+        }
+        else
+        {
+            FL.motorTorque = 0;
+            FR.motorTorque = 0;
+
+            FL.brakeTorque = maxBrakingTorque;
+            FR.brakeTorque = maxBrakingTorque;
+            RL.brakeTorque = maxBrakingTorque;
+            RR.brakeTorque = maxBrakingTorque;
         }
 
     }
@@ -107,201 +161,60 @@ public class Car : MonoBehaviour
 
     public void move()
     {
-        //calculating current speed
-        currentSpeed = 2 * Mathf.PI * FL.radius * FL.rpm * 60 / 1000;
 
-        //apply torque to the wheels until at the coordinates set speed
-        if (currentSpeed < speed & !isBraking)
+
+        //turning brake lights on/off
+        if (isBraking)
         {
-            FL.motorTorque = maxTorque;
-            FR.motorTorque = maxTorque;
-
-            foreach (GameObject light in rearLights)
-            {
-                light.GetComponent<Light>().intensity = 0;
-            }
-
-        }
-        else if(currentSpeed > speed & !isBraking)
-        {
-            isBraking = true;
-            //once at the speed required, do not add any more torque
-            FL.motorTorque = 0;
-            FR.motorTorque = 0;
-
             foreach (GameObject light in rearLights)
             {
                 light.GetComponent<Light>().intensity = lightIntensity;
             }
+        }
+        else
+        {
+            foreach (GameObject light in rearLights)
+            {
+                light.GetComponent<Light>().intensity = 0;
+            }
+        }
+
+        //apply torque to the wheels until at the coordinates set speed
+        if (currentSpeed < maxSpeed & !isBraking)
+        {
+            FL.motorTorque = maxTorque;
+            FR.motorTorque = maxTorque;
+
+            //resetting brake torque to zero
+            RL.brakeTorque = 0;
+            RR.brakeTorque = 0;
 
         }
-        else if (currentSpeed > speed & isBraking)
+        else if (currentSpeed > maxSpeed & !isBraking)
         {
+            //once at the speed required, do not add any more torque
+            FL.motorTorque = 0;
+            FR.motorTorque = 0;
+
+
+        }
+        else if (currentSpeed > minSpeed & isBraking)
+        {
+            //resetting motor torque to zero
+            FL.motorTorque = 0;
+            FR.motorTorque = 0;
+
             RL.brakeTorque = maxBrakingTorque;
             RR.brakeTorque = maxBrakingTorque;
         }
-        else if(currentSpeed < speed & isBraking)
+        else if (currentSpeed < minSpeed & isBraking)
         {
+
             RL.brakeTorque = 0;
             RR.brakeTorque = 0;
         }
 
     }
-
-
-    // Update is called once per frame
-    void Update()
-    {
-
-        speed = currentCoordinate.mph * 2;
-    }
-    /***
-
-        //Vector3 pos = currentCoordinate.getPosition();
-
-        if (!Main.getState())
-        {
-            
-            frameCount++;
-            elapsedTime += Time.deltaTime;
-
-            //calculating the speed over x amount of frames to increase accuracy
-            if(frameCount >= 10) {
-
-                //current speed in meters per second (1.43 is the conversion so that it is relative to the smaller scale of everything)
-                float currentSpeed = ((transform.position - previousPosition).magnitude) / elapsedTime;
-                //converting to miles per hour
-                currentSpeed = currentSpeed * 2.2369f;
-                previousPosition = transform.position;
-
-                print(currentSpeed + "mph");
-
-                frameCount = 0;
-                elapsedTime = 0;
-            }
-            
-
-            //print(gameObject.name + "Acceleration: " + acceleration);
-
-            if (isFollowingPath)
-            {
-                if (!isStopping)
-                {
-
-                    //converting mph to m/s for the coordinate speed
-                    float mps = currentCoordinate.mph / 2.2369f;
-
-                    if (speed < mps)
-                    {
-
-                        speed += acceleration;
-
-                        if (speed > mps)
-                        {
-                            speed = mps;
-                        }
-
-                    }
-
-                    if (speed > mps)
-                    {
-
-                        if (gameObject.tag != "Player" & !needToStop)
-                        {
-                            needToStop = true;
-                            Main.startTimer();
-                        }
-                        
-                        if(gameObject.tag == "Player" & needToStop & !hasBraked)
-                        {
-                            hasBraked = false;
-                        }
-                     
-                        foreach(GameObject light in rearLights)
-                        {
-                            light.GetComponent<Light>().intensity = lightIntensity;
-                        }
-
-                        speed -= acceleration;
-
-                        if (speed <= mps)
-                        {
-                            speed = mps;
-
-                            if (gameObject.tag != "Player")
-                            {
-                                needToStop = false;
-                                if(Main.getTimer() != 0)
-                                {
-                                    Main.stopTimer();
-                                    incorrectStops++;
-                                    print("Correct: " + correctStops + ", Incorrect: " + incorrectStops);
-                                }
-                            }
-
-                            if(gameObject.tag == "Player")
-                            {
-                                hasBraked = false;
-                            }
-
-                            foreach (GameObject light in rearLights)
-                            {
-                                light.GetComponent<Light>().intensity = 0;
-                            }
-                        }
-                    }
-                }
-                else
-                {
-
-                    if (crashed)
-                    {
-                        print("Crashed");
-                        Main.stopScene();
-                       
-                    }
-                    else
-                    {
-                        if (speed > 0)
-                        {
-                            speed -= fullDeceleration;
-                        }
-                        else
-                        {
-                           
-                            speed = 0;
-
-                            if (gameObject.tag == "Player")
-                            {
-                                print("Didn't crash");
-                                Main.stopScene();
-                            }
-                            else
-                            {
-                            //this code can be used to measure the time it takes for the car to come to a complete stop
-                            //(need to disable the car script on the player car to avoid collision)
-                                if (Main.getTimer() > 0)
-                                {
-                                    print("STOPPING TIME: " + Main.stopTimer());
-                                }
-                            }
-                            
-                        }
-                    }
-                }
-
-                var q = Quaternion.LookRotation(pos - steeringAxis.position);
-                transform.rotation = Quaternion.RotateTowards(steeringAxis.rotation, q, (speed * 8) * Time.deltaTime);
-
-                // move towards the target
-                transform.Translate(Vector3.forward * speed * Time.deltaTime);
-
-            }
-        }
-
-    }
-    */
-
 
     public void readyToBrake()
     {
@@ -317,7 +230,7 @@ public class Car : MonoBehaviour
             {
                 isStopping = true;
             }
-            
+
             correctStops++;
             float time = Main.stopTimer() * 1000;
             print("Reaction Time (ms): " + time);
@@ -337,15 +250,66 @@ public class Car : MonoBehaviour
 
         print("Correct: " + correctStops + ", Incorrect: " + incorrectStops);
         //TODO: Stop timer
-        
+
     }
 
+    private void OnCollisionEnter(Collision col)
+    {
+        if (col.gameObject.tag == "Car")
+        {
+            print("crashed");
+            Main.stopScene();
+
+        }
+    }
 
     private void OnTriggerEnter(Collider col)
     {
-        
+
         if (col.tag == "Coordinate")
         {
+            if (currentCoordinate.brake)
+            {
+
+                print("BRAKING");
+                if (gameObject.tag != "Player" & !needToStop)
+                {
+                    needToStop = true;
+                    Main.startTimer();
+                }
+
+                if (gameObject.tag == "Player" & needToStop & !hasBraked)
+                {
+                    hasBraked = false;
+                }
+
+                isBraking = true;
+            }
+            else
+            {
+                if (isBraking)
+                {
+                    if (gameObject.tag != "Player")
+                    {
+                        needToStop = false;
+                        if (Main.getTimer() != 0)
+                        {
+                            Main.stopTimer();
+                            incorrectStops++;
+                            print("Correct: " + correctStops + ", Incorrect: " + incorrectStops);
+                        }
+                    }
+
+                    if (gameObject.tag == "Player")
+                    {
+                        hasBraked = false;
+                    }
+
+                    isBraking = false;
+                }
+
+            }
+
             currentIndex++;
 
             if (currentIndex + 1 >= path.getLength())
@@ -359,28 +323,16 @@ public class Car : MonoBehaviour
                 //reached coordinate, now get next one
                 currentCoordinate = path.getCoordinate(currentIndex);
 
-                if (gameObject.tag == "Player" & currentCoordinate.mph < currentSpeed)
-                {
-                    StartCoroutine(Braking());
-                }
 
             }
 
-          
-           
-        }
-        
-
-        if (col.tag == "Car")
-        {
-            print("end scene");
-            crashed = true;
-            Main.stopScene();
+            print(gameObject.tag + " : " + currentIndex);
 
 
         }
 
-        if(col.tag == "Stop" & gameObject.tag == "Car")
+
+        if (col.tag == "Stop" & gameObject.tag == "Car")
         {
 
             StartCoroutine(StopCar());
@@ -390,47 +342,6 @@ public class Car : MonoBehaviour
         {
             nearEnd = true;
         }
-
-    }
-
-    IEnumerator Braking()
-    {
-        print("BRAKING");
-        if (gameObject.tag != "Player" & !needToStop)
-        {
-            needToStop = true;
-            Main.startTimer();
-        }
-
-        if (gameObject.tag == "Player" & needToStop & !hasBraked)
-        {
-            hasBraked = false;
-        }
-
-        foreach (GameObject light in rearLights)
-        {
-            light.GetComponent<Light>().intensity = lightIntensity;
-        }
-
-        yield return new WaitForSeconds(2f);
-
-        if (gameObject.tag != "Player")
-        {
-            needToStop = false;
-            if (Main.getTimer() != 0)
-            {
-                Main.stopTimer();
-                incorrectStops++;
-                print("Correct: " + correctStops + ", Incorrect: " + incorrectStops);
-            }
-        }
-
-        if (gameObject.tag == "Player")
-        {
-            hasBraked = false;
-        }
-
-        isBraking = false;
 
     }
 

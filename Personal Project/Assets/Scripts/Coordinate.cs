@@ -5,7 +5,7 @@ using UnityEngine;
 public class Coordinate : MonoBehaviour
 {
     //public so that it can be adjusted quickly in the UI
-    public float mph;
+    public bool brake;
     private Vector3 position;
 
     // Start is called before the first frame update

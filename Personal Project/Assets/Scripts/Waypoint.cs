@@ -8,7 +8,10 @@ public class Waypoint : MonoBehaviour
     private Coordinate[] coordinates;
     public Color colour;
 
-    void Start()
+    /*
+     * Initialising the array on awake
+     */
+    void Awake()
     {
 
         coordinates = new Coordinate[transform.childCount];
