@@ -94,21 +94,24 @@ public class Main : MonoBehaviour
 
     public static void loadNextScene()
     {
+        //value of the next scenes index
         int index = SceneManager.GetActiveScene().buildIndex + 1;
+    
+        print(index);
+        print(SceneManager.sceneCountInBuildSettings);
 
-        try
+        //if there are more scenes left then load the next one
+        if (index < SceneManager.sceneCountInBuildSettings)
         {
-            //if scene exists, load it
-            if (SceneManager.GetSceneAt(index) != null)
-            {
-                SceneManager.LoadScene(index);
-            }
+            SceneManager.LoadScene(index);
         }
-        catch 
+        else
         {
-            //if not then load the main menu
-            SceneManager.LoadScene(0);
+            //TODO: add an end scene? graphic with results and option to restart?
+            print("no more scenes");
         }
+
+       
     }
 
     public static void addResult(Result result)

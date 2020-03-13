@@ -14,7 +14,9 @@ public class Controller : MonoBehaviour
     private OVRInput.Button up = OVRInput.Button.PrimaryThumbstickUp;
 
     private bool isTrackingOn;
-    private bool isOverMenuItem;
+    private bool isOverItem;
+    private bool isLoadingScene;
+    private bool inputsEnabled;
 
     private SatNav satnav;
     private float timer;
@@ -24,16 +26,20 @@ public class Controller : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        inputsEnabled = false;
         timer = 0;
         isTrackingOn = false;
-        isOverMenuItem = false;
+        isOverItem = false;
+        isLoadingScene = false;
         satnav = GameObject.FindGameObjectWithTag("SatNav").GetComponent<SatNav>();
+
+        StartCoroutine(EnableInputs());
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!Main.getState())
+        if (!Main.getState() & inputsEnabled)
         {
             if (!oculusInputs)
             {
@@ -97,7 +103,7 @@ public class Controller : MonoBehaviour
                 //left trigger pressed
                 if (OVRInput.GetDown(selectionButton))
                 {
-                    if (isTrackingOn & isOverMenuItem)
+                    if (isTrackingOn & isOverItem)
                     {
                         //TODO: interact with menu
                     }
@@ -122,11 +128,11 @@ public class Controller : MonoBehaviour
                 }
             }
         }
-        else
+        else if(Main.getState())
         {
             if (!oculusInputs)
             {
-                if (Input.GetKey(KeyCode.Space))
+                if (Input.GetKey(KeyCode.Space) & !isLoadingScene)
                 {
 
                     timer += Time.deltaTime;
@@ -134,6 +140,7 @@ public class Controller : MonoBehaviour
 
                     if (timer >= heldTime)
                     {
+                        isLoadingScene = true;
                         //load next scene
                         Main.loadNextScene();
                     }
@@ -166,6 +173,16 @@ public class Controller : MonoBehaviour
 
         }
 
+    }
+
+    /*
+     * method for enabling inputs after a second, so that when the scene changes it doesn't automatically pick up your input to change scene
+     */
+    IEnumerator EnableInputs()
+    {
+        yield return new WaitForSeconds(1);
+        inputsEnabled = true;
+        print("inputs now enabled");
     }
 
 
