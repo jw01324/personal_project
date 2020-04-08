@@ -6,7 +6,7 @@ using TMPro;
 
 public class Main : MonoBehaviour
 {
-
+    public static int currentScene;
     private Car player;
     //private Car incidentCar;
     private static bool isTiming;
@@ -19,6 +19,7 @@ public class Main : MonoBehaviour
 
     void Start()
     {
+        currentScene = SceneManager.GetActiveScene().buildIndex;
         isTiming = false;
         timer = 0;
         done = false;
@@ -27,6 +28,8 @@ public class Main : MonoBehaviour
 
     void Update()
     {
+        currentScene = SceneManager.GetActiveScene().buildIndex;
+
         if (!done)
         {
             if (isTiming)

@@ -86,8 +86,9 @@ public class Car : MonoBehaviour
         if (!Main.getState())
         {
             //calculating current speed
-            //currentSpeed = 2 * Mathf.PI * FL.radius * FL.rpm * 60 / 1000;
+            float angularVelocity = 2 * Mathf.PI * FL.radius * (FL.rpm / 60);
             currentSpeed = (transform.position - previousPosition).magnitude / Time.deltaTime;
+            print(gameObject.tag + ": " + currentSpeed + "m/s, " + angularVelocity + "rad/s");
             previousPosition = transform.position;
 
             if (isFollowingPath)
@@ -209,7 +210,8 @@ public class Car : MonoBehaviour
         }
         else if (currentSpeed < minSpeed & isBraking)
         {
-
+            FL.motorTorque = maxTorque;
+            FR.motorTorque = maxTorque;
             RL.brakeTorque = 0;
             RR.brakeTorque = 0;
         }
