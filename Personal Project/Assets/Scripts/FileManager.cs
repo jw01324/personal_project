@@ -6,7 +6,7 @@ using System;
 
 public class FileManager 
 {
-    string path = Application.persistentDataPath + "./Data/" + MainMenu.userID + "/";
+    string path = Application.persistentDataPath + "./Data/" + StartScene.userID + "/";
 
     public bool createResultFile(Result result, int type)
     {

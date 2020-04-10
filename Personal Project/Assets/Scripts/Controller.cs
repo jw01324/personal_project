@@ -19,8 +19,8 @@ public class Controller : MonoBehaviour
     private bool inputsEnabled;
 
     private SatNav satnav;
-    private float timer;
-    public float heldTime = 2f;
+    public static float timer;
+    public static float heldTime = 2f;
 
 
     // Start is called before the first frame update
@@ -47,7 +47,6 @@ public class Controller : MonoBehaviour
                 {
 
                     timer += Time.deltaTime;
-                    print(timer);
 
                     if (timer >= heldTime)
                     {
@@ -60,6 +59,8 @@ public class Controller : MonoBehaviour
                 {
                     timer = 0;
                 }
+
+
             }
             else
             {
@@ -68,7 +69,6 @@ public class Controller : MonoBehaviour
                 {
 
                     timer += Time.deltaTime;
-                    print(timer);
 
                     if (timer >= heldTime)
                     {
@@ -79,6 +79,13 @@ public class Controller : MonoBehaviour
                 else
                 {
                     timer = 0;
+                }
+
+                //holding down A, B, and the left trigger all at once
+                if (OVRInput.Get(OVRInput.Button.One) & OVRInput.Get(OVRInput.Button.Two) & OVRInput.Get(selectionButton))
+                {
+                    //take to the secret menu (used only by the developer for testing purposes)
+                    Main.loadScene("MainMenu");
                 }
             }
         }
@@ -182,7 +189,6 @@ public class Controller : MonoBehaviour
                     {
 
                         timer += Time.deltaTime;
-                        print(timer);
 
                         if (timer >= heldTime)
                         {
@@ -203,7 +209,6 @@ public class Controller : MonoBehaviour
                     {
 
                         timer += Time.deltaTime;
-                        print(timer);
 
                         if (timer >= heldTime)
                         {
