@@ -6,9 +6,7 @@ using UnityEngine.UI;
 
 public class StartScene : MonoBehaviour
 {
-    //both values are static so they can be accessed in other scripts and scenes
-    public static string userID = "";
-    public static int[] satNavOrder = new int[4];
+    private string userID = "";
 
     public TextMeshProUGUI idtext;
     public Slider slider;
@@ -21,11 +19,12 @@ public class StartScene : MonoBehaviour
             userID = generateRandomUserID();
         }
 
+        SceneData.userID = userID;
+
         idtext.SetText("User ID: " + userID);
 
-        satNavOrder = generateSatNavOrder();
+        SceneData.satNavOrder = generateSatNavOrder();
 
-        //TODO: write the id and satnav order to a file so that it can be read in other scenes
     }
 
     private void Update()

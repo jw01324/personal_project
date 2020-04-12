@@ -88,7 +88,7 @@ public class Car : MonoBehaviour
             //calculating current speed
             float angularVelocity = 2 * Mathf.PI * FL.radius * (FL.rpm / 60);
             currentSpeed = (transform.position - previousPosition).magnitude / Time.deltaTime;
-            print(gameObject.tag + ": " + currentSpeed + "m/s, " + angularVelocity + "rad/s");
+            //print(gameObject.tag + ": " + currentSpeed + "m/s, " + angularVelocity + "rad/s");
             previousPosition = transform.position;
 
             if (isFollowingPath)
