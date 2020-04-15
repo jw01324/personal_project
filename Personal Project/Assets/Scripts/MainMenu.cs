@@ -5,16 +5,23 @@ using TMPro;
 
 public class MainMenu : MonoBehaviour
 {
-   
+
+    private Main main;
+
+    private void Start()
+    {
+        main = GameObject.FindGameObjectWithTag("Main").GetComponent<Main>();
+    }
+
     public void loadControlScene()
     {
-        Main.loadScene("ControlScene");
+        main.loadScene("ControlScene");
     }
 
     public void startTest()
     {
         //TODO: add method for starting test (scenes 1 - 4 with mixed variables)
-        Main.loadScene("Scene1");
+        main.loadScene("Scene1");
     }
 
     public void sceneSelection()
@@ -24,6 +31,6 @@ public class MainMenu : MonoBehaviour
 
     public void quit()
     {
-        Main.quit();
+        main.quit();
     }
 }

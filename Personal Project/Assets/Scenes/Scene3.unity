@@ -2073,6 +2073,10 @@ MonoBehaviour:
   rearLights:
   - {fileID: 1464372358}
   - {fileID: 402732957}
+  incorrectReactions: 0
+  correctReactions: 0
+  crashed: 0
+  reactionTimes: 
   FL: {fileID: 0}
   FR: {fileID: 0}
   RL: {fileID: 0}
@@ -10149,6 +10153,11 @@ PrefabInstance:
     - target: {fileID: 4379178989526042648, guid: fe9d80524b1f86548bb69f928c85fe2a,
         type: 3}
       propertyPath: m_Name
+      value: Main
+      objectReference: {fileID: 0}
+    - target: {fileID: 4379178989526042648, guid: fe9d80524b1f86548bb69f928c85fe2a,
+        type: 3}
+      propertyPath: m_TagString
       value: Main
       objectReference: {fileID: 0}
     - target: {fileID: 4379178989526042654, guid: fe9d80524b1f86548bb69f928c85fe2a,

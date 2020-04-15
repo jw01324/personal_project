@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Car : MonoBehaviour
 {
+    private Main main;
     private float accelerationVariable;
     private float acceleration;
     private float fullDeceleration;
@@ -22,11 +23,13 @@ public class Car : MonoBehaviour
     private bool nearEnd;
     private static bool needToStop;
     public GameObject[] rearLights;
-    public static int incorrectStops;
-    public static int correctStops;
+    public int incorrectReactions;
+    public int correctReactions;
+    public bool crashed;
     private Vector3 previousPosition;
     private int frameCount;
     private float elapsedTime;
+    public List<int> reactionTimes = new List<int>();
 
     public WheelCollider FL;
     public WheelCollider FR;
@@ -43,13 +46,14 @@ public class Car : MonoBehaviour
     void Start()
     {
         //acceleration rate variable
+        crashed = false;
         accelerationVariable = 0.0075f;
         acceleration = 0.175f;
         fullDeceleration = 0.4f;
         elapsedTime = 0;
         frameCount = 0;
-        incorrectStops = 0;
-        correctStops = 0;
+        incorrectReactions = 0;
+        correctReactions = 0;
         hasBraked = false;
         isStopping = false;
         needToStop = false;
@@ -77,13 +81,14 @@ public class Car : MonoBehaviour
             currentCoordinate = path.getCoordinate(currentIndex);
         }
 
+        main = GameObject.FindGameObjectWithTag("Main").GetComponent<Main>();
 
     }
 
     void FixedUpdate()
     {
 
-        if (!Main.getState())
+        if (!main.getState())
         {
             //calculating current speed
             float angularVelocity = 2 * Mathf.PI * FL.radius * (FL.rpm / 60);
@@ -115,15 +120,15 @@ public class Car : MonoBehaviour
                         if (gameObject.tag == "Player")
                         {
                             print("Didn't crash");
-                            Main.stopScene();
+                            main.stopScene();
                         }
                         else
                         {
                             //this code can be used to measure the time it takes for the car to come to a complete stop
                             //(need to disable the car script on the player car to avoid collision)
-                            if (Main.getTimer() > 0)
+                            if (main.getTimer() > 0)
                             {
-                                print("STOPPING TIME: " + Main.stopTimer());
+                                print("STOPPING TIME: " + main.stopTimer());
                             }
                         }
 
@@ -233,9 +238,10 @@ public class Car : MonoBehaviour
                 isStopping = true;
             }
 
-            correctStops++;
-            float time = Main.stopTimer() * 1000;
+            correctReactions++;
+            int time = (int) (main.stopTimer() * 1000);
             print("Reaction Time (ms): " + time);
+            reactionTimes.Add(time);
             hasBraked = true;
 
         }
@@ -246,11 +252,11 @@ public class Car : MonoBehaviour
         else
         {
             //no indication to stop, hence incorrect
-            incorrectStops++;
+            incorrectReactions++;
         }
 
 
-        print("Correct: " + correctStops + ", Incorrect: " + incorrectStops);
+        print("Correct: " + correctReactions + ", Incorrect: " + incorrectReactions);
         //TODO: Stop timer
 
     }
@@ -260,7 +266,8 @@ public class Car : MonoBehaviour
         if (col.gameObject.tag == "Car")
         {
             print("crashed");
-            Main.stopScene();
+            crashed = true;
+            main.stopScene();
 
         }
     }
@@ -277,7 +284,7 @@ public class Car : MonoBehaviour
                 if (gameObject.tag != "Player" & !needToStop)
                 {
                     needToStop = true;
-                    Main.startTimer();
+                    main.startTimer();
                 }
 
                 if (gameObject.tag == "Player" & needToStop & !hasBraked)
@@ -294,11 +301,11 @@ public class Car : MonoBehaviour
                     if (gameObject.tag != "Player")
                     {
                         needToStop = false;
-                        if (Main.getTimer() != 0)
+                        if (main.getTimer() != 0)
                         {
-                            Main.stopTimer();
-                            incorrectStops++;
-                            print("Correct: " + correctStops + ", Incorrect: " + incorrectStops);
+                            main.stopTimer();
+                            incorrectReactions++;
+                            print("Correct: " + correctReactions + ", Incorrect: " + incorrectReactions);
                         }
                     }
 
@@ -370,7 +377,7 @@ public class Car : MonoBehaviour
 
         isStopping = true;
         needToStop = true;
-        Main.startTimer();
+        main.startTimer();
 
     }
 

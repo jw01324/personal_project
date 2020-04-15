@@ -12,61 +12,113 @@ public class SceneData
      */
 
     public static string userID;
-    public static int[] satNavOrder;
-    public static int[] controlTimes;
-    public static Result[] results = new Result[4];
-    private int currentNumberOfResults = 0;
+    //setting default satnav order to do audiovisual for all scenes as that's best for testing (if i start the app from scene 1 without generating an order then this is handy)
+    public static int[] satNavOrder = { 3, 2, 2, 2 };
+    public static int[] controlTimes = new int[5];
+    public static List<Result> results = new List<Result>();
 
-    public float getAverageControlTime()
+    public static float getAverageControlTime()
     {
-        int total = 0;
-
-        foreach(int time in controlTimes)
+        //checking if any control times have been recorded, otherwise will be 0
+        if (controlTimes.Length > 0)
         {
-            total += time;
-        }
+            int total = 0;
 
-        //number of control times is 5, so the average will be the total divided by the number of values (5).
-        return total / 5;
+            foreach (int time in controlTimes)
+            {
+                total += time;
+            }
+
+            //number of control times is 5, so the average will be the total divided by the number of values (5).
+            return total / 5;
+        }
+        else
+        {
+            return 0;
+        }
     }
 
-    public int getMedianControlTime()
+    public static int getMedianControlTime()
     {
-        bool sorted = false;
-        int tempValue;
-
-        while (!sorted)
+        //checking if any control times have been recorded, otherwise will be 0
+        if (controlTimes.Length > 0)
         {
-            sorted = true;
-            for (int i = 0; i < controlTimes.Length - 1; i++)
+            bool sorted = false;
+            int tempValue;
+
+            while (!sorted)
             {
-                if (controlTimes[i] > controlTimes[i + 1])
+                sorted = true;
+                for (int i = 0; i < controlTimes.Length - 1; i++)
                 {
-                    tempValue = controlTimes[i];
-                    controlTimes[i] = controlTimes[i + 1];
-                    controlTimes[i + 1] = tempValue;
-                    sorted = false;
+                    if (controlTimes[i] > controlTimes[i + 1])
+                    {
+                        tempValue = controlTimes[i];
+                        controlTimes[i] = controlTimes[i + 1];
+                        controlTimes[i + 1] = tempValue;
+                        sorted = false;
+                    }
                 }
             }
-        }
 
-        //number of control times is 5, so the median will be the 3rd number. Hence, second index.
-        return controlTimes[2];
+            //number of control times is 5, so the median will be the 3rd number. Hence, second index.
+            return controlTimes[2];
+        }
+        else
+        {
+            return 0;
+        }
         
     }
 
-    public void addResult(Result result)
-    {
-        results[currentNumberOfResults] = result;
-        currentNumberOfResults += 1;
-    }
-
-    public string dataToString()
+    public static string dataToString()
     {
 
         string s = "";
 
         //TODO: convert all the scene data to a string that can be written to a file and be readable.
+
+        s += ("ID: " + userID + "\n" + "Control Times: " + controlTimesToString() + ", Average = " + getAverageControlTime() + ", Median = " + getMedianControlTime() + "\n\n" 
+            + "Order:\n" + orderToString() + "\n" + resultsToString());
+
+        return s;
+    }
+
+    public static string orderToString()
+    {
+        string s = "";
+
+        for (int i = 0; i < satNavOrder.Length; i++)
+        {
+            SatNav.SatNavType type = (SatNav.SatNavType)satNavOrder[i];
+            s += "Scene " + (i + 1) + " = " + type + "\n";
+        }
+
+        return s;
+    }
+
+    public static string controlTimesToString()
+    {
+        string s = "[";
+
+        for(int i = 0; i < controlTimes.Length - 1; i++)
+        {
+            s += (controlTimes[i] + ", ");
+        }
+
+        s += (controlTimes[controlTimes.Length - 1] + "]");
+
+        return s;
+    }
+
+    public static string resultsToString()
+    {
+        string s = "";
+
+        for(int i = 0; i < results.Count; i++)
+        {
+            s += ("Result" + (i + 1) + ": " + results[i].toString(0) + "\n\n");
+        }
 
         return s;
     }

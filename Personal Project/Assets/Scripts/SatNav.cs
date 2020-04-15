@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class SatNav : MonoBehaviour
 {
+    private Main main;
     public int intType;
     private bool arrowVisable;
     private float countdownTimer;
@@ -13,9 +15,9 @@ public class SatNav : MonoBehaviour
     private bool startCountdown;
     public int correctAnswers;
     public int incorrectAnswers;
-    public enum Type { AUDIO, VISUAL, AUDIOVISUAL, PROGRAMMABLE };
+    public enum SatNavType { AUDIO, VISUAL, AUDIOVISUAL, PROGRAMMABLE };
     public enum Direction { LEFT, RIGHT, UP};
-    private Type type;
+    private SatNavType type;
     private Direction direction;
     public AudioSource leftAudio;
     public AudioSource rightAudio;
@@ -33,6 +35,7 @@ public class SatNav : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        main = GameObject.FindGameObjectWithTag("Main").GetComponent<Main>();
 
         correctAnswers = 0;
         incorrectAnswers = 0;
@@ -45,9 +48,11 @@ public class SatNav : MonoBehaviour
 
         text.SetText("");
 
+        assignSatNavTypeToScene();
+
         if (intType >= 0 & intType < 4)
         {
-            type = (Type)intType;
+            type = (SatNavType)intType;
             print(type.ToString());
         }
         else
@@ -61,7 +66,7 @@ public class SatNav : MonoBehaviour
 
     void Update()
     {
-        if (!Main.getState())
+        if (!main.getState())
         {
             arrowVisable = arrow.GetComponent<Image>().enabled;
 
@@ -69,7 +74,7 @@ public class SatNav : MonoBehaviour
             {
                 countdownTimer -= Time.deltaTime;
 
-                if (type == Type.AUDIOVISUAL | type == Type.VISUAL)
+                if (type == SatNavType.AUDIOVISUAL | type == SatNavType.VISUAL)
                 {
 
                     int viewtime = (int)countdownTimer + 1;
@@ -85,7 +90,7 @@ public class SatNav : MonoBehaviour
 
                 }
 
-                if (type == Type.AUDIO | type == Type.AUDIOVISUAL)
+                if (type == SatNavType.AUDIO | type == SatNavType.AUDIOVISUAL)
                 {
                     if (countdownTimer < 0)
                     {
@@ -126,7 +131,7 @@ public class SatNav : MonoBehaviour
 
         yield return new WaitForSeconds(sec);
 
-        if (!Main.getState())
+        if (!main.getState())
         {
 
             int r = Random.Range(0, 3);
@@ -136,7 +141,7 @@ public class SatNav : MonoBehaviour
             print(direction);
 
 
-            if (type == Type.AUDIO)
+            if (type == SatNavType.AUDIO)
             {
                 //audio
 
@@ -162,7 +167,7 @@ public class SatNav : MonoBehaviour
 
                 print("play audio");
 
-            }else if (type == Type.VISUAL)
+            }else if (type == SatNavType.VISUAL)
             {
                 //visual 
 
@@ -182,7 +187,7 @@ public class SatNav : MonoBehaviour
                 print("display arrow");
                 arrow.GetComponent<Image>().enabled = true;
 
-            }else if (type == Type.AUDIOVISUAL)
+            }else if (type == SatNavType.AUDIOVISUAL)
             {
                 //audiovisual 
 
@@ -239,7 +244,7 @@ public class SatNav : MonoBehaviour
         if (startCountdown)
         {
 
-            if(type == Type.AUDIOVISUAL | type == Type.VISUAL)
+            if(type == SatNavType.AUDIOVISUAL | type == SatNavType.VISUAL)
             {
                 arrow.GetComponent<Image>().enabled = false;
             }
@@ -276,6 +281,32 @@ public class SatNav : MonoBehaviour
             return false;
         }
 
+    }
+
+    /*
+     * Assigning the sat nav type (audio, audiovisual, etc) to the correct scene that it's in depending on the random order generated at the start 
+     */
+    public void assignSatNavTypeToScene()
+    {
+
+        intType = SceneData.satNavOrder[SceneManager.GetActiveScene().buildIndex - 2];
+
+        /*
+        switch (SceneManager.GetActiveScene().buildIndex)
+        {
+            case (2):
+                break;
+            case (3):
+                break:
+
+        }
+        */
+        
+    }
+
+    public string getSatNavType()
+    {
+        return "" + type;
     }
 
 }

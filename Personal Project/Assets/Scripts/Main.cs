@@ -7,13 +7,15 @@ using TMPro;
 public class Main : MonoBehaviour
 {
     public static int currentScene;
-    private Car player;
+    private Car car;
     //private Car incidentCar;
     private static bool isTiming;
     private static float timer;
     private static bool done;
     private bool inMenu;
     private int attempts;
+    private SatNav satnav;
+
     //public static FileManager fm = new FileManager();
 
 
@@ -24,10 +26,20 @@ public class Main : MonoBehaviour
         timer = 0;
         done = false;
 
+        satnav = GameObject.FindGameObjectWithTag("SatNav").GetComponent<SatNav>();
+        car = GameObject.FindGameObjectWithTag("Player").GetComponent<Car>();
+
+        print(SceneData.dataToString());
     }
 
     void Update()
     {
+        // checks if the scene has changed in which case to make sure that the scene is not set to done so that it runs correctly
+        if(currentScene < SceneManager.GetActiveScene().buildIndex)
+        {
+            done = false;
+        }
+
         currentScene = SceneManager.GetActiveScene().buildIndex;
 
         if (!done)
@@ -40,12 +52,12 @@ public class Main : MonoBehaviour
        
     }
 
-    public static void startTimer()
+    public void startTimer()
     {
         isTiming = true;
     }
 
-    public static float stopTimer()
+    public float stopTimer()
     {
         isTiming = false;
         float finalTime = timer;
@@ -53,21 +65,28 @@ public class Main : MonoBehaviour
         return finalTime;
     }
 
-    public static float getTimer()
+    public float getTimer()
     {
         return timer;
     }
 
-    public static bool getState()
+    public bool getState()
     {
         return done;
     }
 
-    public static void stopScene()
+    public void stopScene()
     {
 
         done = true;
         print("SCENE OVER");
+
+        Result result = new Result(SceneManager.GetActiveScene().name, satnav.getSatNavType(), car.reactionTimes.ToArray(), car.correctReactions, car.incorrectReactions, satnav.correctAnswers, satnav.incorrectAnswers, car.crashed);
+        print(result.toString(0));
+
+        SceneData.results.Add(result);
+
+        print(SceneData.dataToString());
 
         TextMeshProUGUI resultsText = GameObject.FindGameObjectWithTag("EndScreen").transform.GetChild(0).GetComponent<TextMeshProUGUI>();
         
@@ -76,12 +95,12 @@ public class Main : MonoBehaviour
 
     }
 
-    public static void restartScene()
+    public void restartScene()
     {
         Time.timeScale = 1f;
     }
 
-    public static void quit()
+    public void quit()
     {
         Application.Quit();
     }
@@ -89,13 +108,13 @@ public class Main : MonoBehaviour
     /*
      * Method for loading the scenes from the main menu
      */
-    public static void loadScene(string sceneName)
+    public void loadScene(string sceneName)
     {
         SceneManager.LoadScene(sceneName);
 
     }
 
-    public static void loadNextScene()
+    public void loadNextScene()
     {
         //value of the next scenes index
         int index = SceneManager.GetActiveScene().buildIndex + 1;
@@ -117,18 +136,18 @@ public class Main : MonoBehaviour
        
     }
 
-    public static void addResult(Result result)
+    public void addResult(Result result)
     {
 
     }
 
     /**
-    public static void saveTestResultToFile(Result result)
+    public void saveTestResultToFile(Result result)
     {
         fm.createResultFile(result, 0);
     }
 
-    public static void saveSceneResultToFile(Result result)
+    public void saveSceneResultToFile(Result result)
     { 
         fm.createResultFile(result, 1);
     }

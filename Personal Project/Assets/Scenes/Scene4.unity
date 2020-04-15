@@ -1428,6 +1428,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 100182, guid: 9662b9a71e1ad4c94ab3cf154bf8182d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 400092, guid: 9662b9a71e1ad4c94ab3cf154bf8182d, type: 3}
       propertyPath: m_LocalRotation.y
       value: 0.7071068
@@ -1439,10 +1443,6 @@ PrefabInstance:
     - target: {fileID: 400092, guid: 9662b9a71e1ad4c94ab3cf154bf8182d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 90
-      objectReference: {fileID: 0}
-    - target: {fileID: 100182, guid: 9662b9a71e1ad4c94ab3cf154bf8182d, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9662b9a71e1ad4c94ab3cf154bf8182d, type: 3}
@@ -3983,6 +3983,10 @@ MonoBehaviour:
   rearLights:
   - {fileID: 1464372358}
   - {fileID: 402732957}
+  incorrectReactions: 0
+  correctReactions: 0
+  crashed: 0
+  reactionTimes: 
   FL: {fileID: 0}
   FR: {fileID: 0}
   RL: {fileID: 0}
@@ -22033,6 +22037,11 @@ PrefabInstance:
     - target: {fileID: 4379178989526042648, guid: fe9d80524b1f86548bb69f928c85fe2a,
         type: 3}
       propertyPath: m_Name
+      value: Main
+      objectReference: {fileID: 0}
+    - target: {fileID: 4379178989526042648, guid: fe9d80524b1f86548bb69f928c85fe2a,
+        type: 3}
+      propertyPath: m_TagString
       value: Main
       objectReference: {fileID: 0}
     - target: {fileID: 4379178989526042654, guid: fe9d80524b1f86548bb69f928c85fe2a,

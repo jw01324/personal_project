@@ -13,6 +13,8 @@ public class Controller : MonoBehaviour
     private OVRInput.Button right = OVRInput.Button.PrimaryThumbstickRight;
     private OVRInput.Button up = OVRInput.Button.PrimaryThumbstickUp;
 
+    private Main main;
+
     private bool isTrackingOn;
     private bool isOverItem;
     private bool isLoadingScene;
@@ -26,6 +28,8 @@ public class Controller : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        main = GameObject.FindGameObjectWithTag("Main").GetComponent<Main>();
+
         inputsEnabled = false;
         timer = 0;
         isTrackingOn = false;
@@ -60,7 +64,7 @@ public class Controller : MonoBehaviour
                         {
                             isLoadingScene = true;
                             //load next scene
-                            Main.loadNextScene();
+                            main.loadNextScene();
                         }
                     }
                     else
@@ -81,7 +85,7 @@ public class Controller : MonoBehaviour
                         if (timer >= heldTime)
                         {
                             //load next scene
-                            Main.loadNextScene();
+                            main.loadNextScene();
                         }
                     }
                     else
@@ -93,7 +97,7 @@ public class Controller : MonoBehaviour
                     if (OVRInput.Get(OVRInput.Button.One) & OVRInput.Get(OVRInput.Button.Two) & OVRInput.Get(selectionButton))
                     {
                         //take to the secret menu (used only by the developer for testing purposes)
-                        Main.loadScene("MainMenu");
+                        main.loadScene("MainMenu");
                     }
                 }
                 break;
@@ -115,7 +119,7 @@ public class Controller : MonoBehaviour
                                 {
                                     isLoadingScene = true;
                                     //load next scene
-                                    Main.loadNextScene();
+                                    main.loadNextScene();
                                 }
                             }
                             else
@@ -147,7 +151,7 @@ public class Controller : MonoBehaviour
                                 if (timer >= heldTime)
                                 {
                                     //load next scene
-                                    Main.loadNextScene();
+                                    main.loadNextScene();
                                 }
                             }
                             else
@@ -170,7 +174,7 @@ public class Controller : MonoBehaviour
             // scene 1, 2, 3, or 4
             default:
 
-                if (!Main.getState() & inputsEnabled)
+                if (!main.getState() & inputsEnabled)
                 {
                     if (!oculusInputs)
                     {
@@ -259,7 +263,7 @@ public class Controller : MonoBehaviour
                         }
                     }
                 }
-                else if (Main.getState())
+                else if (main.getState())
                 {
                     if (!oculusInputs)
                     {
@@ -272,7 +276,7 @@ public class Controller : MonoBehaviour
                             {
                                 isLoadingScene = true;
                                 //load next scene
-                                Main.loadNextScene();
+                                main.loadNextScene();
                             }
                         }
                         else
@@ -291,7 +295,7 @@ public class Controller : MonoBehaviour
                             if (timer >= heldTime)
                             {
                                 //load next scene
-                                Main.loadNextScene();
+                                main.loadNextScene();
                             }
                         }
                         else

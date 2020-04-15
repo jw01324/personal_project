@@ -5,40 +5,41 @@ using System;
 
 public class Result
 {
-    //common variables
+    // variables
+    private string id;
     private string currentTime;
     private string sceneName;
-
-    //car scene variables
-    private float reactionTime;
     private string satnavType;
-    private bool crashed, music;
-    private int fails;
+    private int[] reactionTimes;
+    private int correctReactions;
+    private int incorrectReactions;
+    private int correctSatNavInputs;
+    private int incorrectSatNavInputs;
+    private bool crashed;
 
-    //control scene variables
-    private string reactionTimes;
-    private double average, median;
 
-    public Result(string sceneName, string satnavType, float reactionTime, bool crashed, bool music, int fails)
+    public Result(string sceneName, string satnavType, int[] reactionTimes, int correctReactions, int incorrectReactions, int correctSatNavInputs, int incorrectSatNavInputs, bool crashed)
     {
+        if (SceneData.userID != null)
+        {
+            id = SceneData.userID;
+        }
+        else
+        {
+            id = "Test ID";
+        }
+
         currentTime = DateTime.Now.ToString("dd-MM-yyyyTHH':'mm':'ss");
         this.sceneName = sceneName;
         this.satnavType = satnavType;
-        this.reactionTime = reactionTime;
-        this.crashed = crashed;
-        this.music = music;
-        this.fails = fails;
-    }
-
-    public Result(string reactionTimes, double average, double median)
-    {
-        this.currentTime = DateTime.Now.ToString("dd-MM-yyyyTHH':'mm':'ss");
-        this.sceneName = "ControlScene";
         this.reactionTimes = reactionTimes;
-        this.average = average;
-        this.median = median;
-
+        this.correctReactions = correctReactions;
+        this.incorrectReactions = incorrectReactions;
+        this.correctSatNavInputs = correctSatNavInputs;
+        this.incorrectSatNavInputs = incorrectSatNavInputs;
+        this.crashed = crashed;
     }
+
 
     public string toString(int i)
     {
@@ -47,15 +48,13 @@ public class Result
         switch (i)
         {
             case 0:
-                //control scene result to string
-                s = sceneName + "\n" + currentTime + "\n" + reactionTimes + "\n" + "average = " + average + ", median = " + median;
+                // car scene result to string
+                s = "ID: " + id + "\n" + "Scene: " + sceneName + "\n" + currentTime + "\n" + "SatNav Type: " + satnavType + "\n" + "Reaction Times: " + arrayToString() + "\n" 
+                    + "Correct Reactions/Incorrect Reactions: " + correctReactions + "/" + incorrectReactions + "\n" + "Correct SatNavInputs/Incorrect SatNavInputs: " + correctSatNavInputs 
+                    + "/" + incorrectSatNavInputs + "\n" + "Crashed: " + crashed;
                 break;
             case 1:
-                //car scene result to string
-                s = sceneName + "\n" + currentTime + "\n" + "Satnav: " + satnavType + "\n" + "Music: " + music + "\n" + "Reaction Time: " + reactionTime + "\n" + "Fails: " + fails + "\n" + "Crashed: " + crashed;
-                break;
-            case 2:
-                //filename
+                // filename
                 s = sceneName + "_" + currentTime + ".txt";
                 break;
             default:
@@ -65,6 +64,28 @@ public class Result
         return s;
     }
 
+
+    public string arrayToString()
+    {
+        if (reactionTimes.Length > 0)
+        {
+            string s = "[";
+
+            for (int i = 0; i < reactionTimes.Length - 1; i++)
+            {
+                s += (reactionTimes[i] + ", ");
+            }
+
+            s += (reactionTimes[reactionTimes.Length - 1] + "]");
+
+            return s;
+        }
+        else
+        {
+            return "[]";
+        }
+
+    }
 
 
 

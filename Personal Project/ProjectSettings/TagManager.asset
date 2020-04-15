@@ -11,6 +11,7 @@ TagManager:
   - SatNav
   - EndScreen
   - Axis
+  - Main
   layers:
   - Default
   - TransparentFX
