@@ -587,6 +587,10 @@ MonoBehaviour:
   rearLights:
   - {fileID: 171135996868507643}
   - {fileID: 171135997679078750}
+  incorrectReactions: 0
+  correctReactions: 0
+  crashed: 0
+  reactionTimes: 
   FL: {fileID: 171135996249997818}
   FR: {fileID: 171135995855497330}
   RL: {fileID: 171135997004261709}
@@ -826,7 +830,7 @@ Light:
   m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_Intensity: 0
   m_Range: 1.5620055
-  m_SpotAngle: 171.68297
+  m_SpotAngle: 179
   m_InnerSpotAngle: 1
   m_CookieSize: 10
   m_Shadows:
@@ -1456,7 +1460,7 @@ Light:
   m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_Intensity: 0
   m_Range: 1.6062646
-  m_SpotAngle: 171.5
+  m_SpotAngle: 179
   m_InnerSpotAngle: 1
   m_CookieSize: 10
   m_Shadows:

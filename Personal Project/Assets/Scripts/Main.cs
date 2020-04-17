@@ -7,16 +7,19 @@ using TMPro;
 
 public class Main : MonoBehaviour
 {
+    private Camera mainCamera;
     public static int currentScene;
     private Car car;
-    //private Car incidentCar;
+    private bool hasStarted;
     private static bool isTiming;
     private static float timer;
     private bool done;
     private bool inMenu;
     private int attempts;
     private SatNav satnav;
-    private GameObject endscreen;
+    private GameObject startScreen;
+    private GameObject endScreen;
+    private TextMeshProUGUI startText;
     private TextMeshProUGUI resultsText;
     private Slider slider;
 
@@ -26,22 +29,54 @@ public class Main : MonoBehaviour
     void Start()
     {
         currentScene = SceneManager.GetActiveScene().buildIndex;
+        hasStarted = false;
         isTiming = false;
         timer = 0;
         done = false;
 
         if (currentScene > 1 & currentScene < 6) {
+
+            mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+            mainCamera.clearFlags = CameraClearFlags.SolidColor;
+            // only render objects in the UI Layer
+            mainCamera.cullingMask = 1 << LayerMask.NameToLayer("UI");
+
             satnav = GameObject.FindGameObjectWithTag("SatNav").GetComponent<SatNav>();
             car = GameObject.FindGameObjectWithTag("Player").GetComponent<Car>();
-            endscreen = GameObject.FindGameObjectWithTag("EndScreen");
+            startScreen = GameObject.FindGameObjectWithTag("StartScreen");
+            endScreen = GameObject.FindGameObjectWithTag("EndScreen");
 
-            resultsText = endscreen.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
-            slider = endscreen.transform.GetChild(2).GetComponent<Slider>();
+            startScreen.transform.GetChild(2).GetComponent<TextMeshProUGUI>().SetText("Scene: " + SceneManager.GetActiveScene().name + "\nSatNav Type: " + satnav.getSatNavType());
+
+            string introduction = "This is a car driving simulation. The car will drive by itself, following the car in front, all you need to do is:" +
+                "\n- Press the right trigger when you spot the car in front braking. This will happen on multiple occasions during the scene.\n";
+
+            switch (satnav.intType)
+            {
+                case (0): //audio type
+                    introduction += "- Move the left trigger in the direction that the SatNav says. This will be an audio cue, you will have 3 seconds to react to each cue, there will be no visual indicator.\n";
+                    break;
+                case (1): //visual type
+                    introduction += "- Move the left trigger in the direction that the SatNav displays. This will be a visual cue on the SatNav display in the car, you will have 3 seconds to react to each cue, there will be no audio indicator.\n";
+                    break;
+                case (2): //audiovisual type
+                    introduction += "- Move the left trigger in the direction that the SatNav displays. This will be a visual and audio cue on the SatNav display in the car, you will have 3 seconds to react to each cue.\n";
+                    break;
+                case (3): //programmable type
+                    introduction += "- Aim the left controller at the virtual keyboard and type in the word displayed on the SatNav, clicking the 'enter' button on the keyboard to submit the word. If you are correct, another word will be displayed. If you are incorrect, please retype the word.\n";
+                    break;
+            }
+
+
+            startText = startScreen.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+            startText.SetText(introduction);
+            resultsText = endScreen.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+            slider = endScreen.transform.GetChild(1).GetComponent<Slider>();
             slider.maxValue = Controller.heldTime;
 
-            for (int i = 0; i < endscreen.transform.childCount; i++)
+            for (int i = 0; i < endScreen.transform.childCount; i++)
             {
-                endscreen.transform.GetChild(i).gameObject.SetActive(false);
+                endScreen.transform.GetChild(i).gameObject.SetActive(false);
             }
 
             print(SceneData.dataToString());
@@ -50,10 +85,10 @@ public class Main : MonoBehaviour
 
     void Update()
     {
-        // checks if the scene has changed in which case to make sure that the scene is not set to done so that it runs correctly
-        if(currentScene < SceneManager.GetActiveScene().buildIndex)
+
+        if (Controller.inputsEnabled)
         {
-            done = false;
+            startScreen.transform.GetChild(1).gameObject.SetActive(true);
         }
 
         currentScene = SceneManager.GetActiveScene().buildIndex;
@@ -119,9 +154,14 @@ public class Main : MonoBehaviour
 
         print(SceneData.dataToString());
 
-        for(int i = 0; i < endscreen.transform.childCount; i++)
+        mainCamera.clearFlags = CameraClearFlags.SolidColor;
+
+        // only render objects in the UI Layer
+        mainCamera.cullingMask = 1 << LayerMask.NameToLayer("UI");
+
+        for (int i = 0; i < endScreen.transform.childCount; i++)
         {
-            endscreen.transform.GetChild(i).gameObject.SetActive(true);
+            endScreen.transform.GetChild(i).gameObject.SetActive(true);
         }
 
         resultsText.SetText(result.toString(0));
@@ -170,10 +210,27 @@ public class Main : MonoBehaviour
        
     }
 
-    public void addResult(Result result)
+    public void startScene()
     {
+        // render all the other layers in the camera
+        for (int i = 0; i < 5; i++)
+        {
+            mainCamera.cullingMask += 1 << i;
+        }
 
+        mainCamera.clearFlags = CameraClearFlags.Skybox;
+
+        startScreen.SetActive(false);
+
+        satnav.onStart();
+        hasStarted = true;
     }
+
+    public bool getHasStarted()
+    {
+        return hasStarted;
+    }
+
 
     /**
     public void saveTestResultToFile(Result result)

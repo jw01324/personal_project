@@ -11,7 +11,7 @@ public class Car : MonoBehaviour
     private Waypoint path;
     private Coordinate currentCoordinate;
     private Rigidbody rb;
-    public static float lightIntensity = 5f;
+    public static float lightIntensity = 7f;
     private float currentSpeed;
     private float maxSpeed;
     private float minSpeed;
@@ -30,6 +30,9 @@ public class Car : MonoBehaviour
     private int frameCount;
     private float elapsedTime;
     public List<int> reactionTimes = new List<int>();
+    private Transform steeringWheel;
+    private float prevRotation;
+    private int frames;
 
     public WheelCollider FL;
     public WheelCollider FR;
@@ -45,8 +48,11 @@ public class Car : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //acceleration rate variable
+
+        prevRotation = 0;
+        frames = 0;
         crashed = false;
+        //acceleration rate variable
         accelerationVariable = 0.0075f;
         acceleration = 0.175f;
         fullDeceleration = 0.4f;
@@ -69,6 +75,7 @@ public class Car : MonoBehaviour
         maxTorque = 150f;
         maxBrakingTorque = 100000f;
         isBraking = false;
+        steeringWheel = GameObject.FindGameObjectWithTag("SteeringWheel").GetComponent<Transform>();
 
         previousPosition = transform.position;
 
@@ -87,67 +94,69 @@ public class Car : MonoBehaviour
 
     void FixedUpdate()
     {
-
-        if (!main.getState())
+        if (main.getHasStarted())
         {
-            //calculating current speed
-            float angularVelocity = 2 * Mathf.PI * FL.radius * (FL.rpm / 60);
-            currentSpeed = (transform.position - previousPosition).magnitude / Time.deltaTime;
-            //print(gameObject.tag + ": " + currentSpeed + "m/s, " + angularVelocity + "rad/s");
-            previousPosition = transform.position;
-
-            if (isFollowingPath)
+            if (!main.getState())
             {
-                if (!isStopping)
-                {
-                    calculateSteeringAngle();
-                    move();
-                }
-                else
-                {
-                    //resetting motor torque to zero
-                    FL.motorTorque = 0;
-                    FR.motorTorque = 0;
+                //calculating current speed
+                float angularVelocity = 2 * Mathf.PI * FL.radius * (FL.rpm / 60);
+                currentSpeed = (transform.position - previousPosition).magnitude / Time.deltaTime;
+                //print(gameObject.tag + ": " + currentSpeed + "m/s, " + angularVelocity + "rad/s");
+                previousPosition = transform.position;
 
-                    FL.brakeTorque = maxBrakingTorque;
-                    FR.brakeTorque = maxBrakingTorque;
-                    RL.brakeTorque = maxBrakingTorque;
-                    RR.brakeTorque = maxBrakingTorque;
-
-                   
-                    if (currentSpeed <= 0)
+                if (isFollowingPath)
+                {
+                    if (!isStopping)
                     {
-                        if (gameObject.tag == "Player")
-                        {
-                            print("Didn't crash");
-                            main.stopScene();
-                        }
-                        else
-                        {
-                            //this code can be used to measure the time it takes for the car to come to a complete stop
-                            //(need to disable the car script on the player car to avoid collision)
-                            if (main.getTimer() > 0)
-                            {
-                                print("STOPPING TIME: " + main.stopTimer());
-                            }
-                        }
+                        calculateSteeringAngle();
+                        move();
+                    }
+                    else
+                    {
+                        //resetting motor torque to zero
+                        FL.motorTorque = 0;
+                        FR.motorTorque = 0;
 
+                        FL.brakeTorque = maxBrakingTorque;
+                        FR.brakeTorque = maxBrakingTorque;
+                        RL.brakeTorque = maxBrakingTorque;
+                        RR.brakeTorque = maxBrakingTorque;
+
+
+                        if (currentSpeed <= 0)
+                        {
+                            if (gameObject.tag == "Player")
+                            {
+                                print("Didn't crash");
+                                main.stopScene();
+                            }
+                            else
+                            {
+                                //this code can be used to measure the time it takes for the car to come to a complete stop
+                                //(need to disable the car script on the player car to avoid collision)
+                                if (main.getTimer() > 0)
+                                {
+                                    print("STOPPING TIME: " + main.stopTimer());
+                                }
+                            }
+
+
+                        }
 
                     }
-                   
+
                 }
-
             }
-        }
-        else
-        {
-            FL.motorTorque = 0;
-            FR.motorTorque = 0;
+            else
+            {
+                FL.motorTorque = 0;
+                FR.motorTorque = 0;
 
-            FL.brakeTorque = maxBrakingTorque;
-            FR.brakeTorque = maxBrakingTorque;
-            RL.brakeTorque = maxBrakingTorque;
-            RR.brakeTorque = maxBrakingTorque;
+                FL.brakeTorque = maxBrakingTorque;
+                FR.brakeTorque = maxBrakingTorque;
+                RL.brakeTorque = maxBrakingTorque;
+                RR.brakeTorque = maxBrakingTorque;
+            }
         }
 
     }
@@ -163,11 +172,13 @@ public class Car : MonoBehaviour
         float turnSpeed = 8f;
         FL.steerAngle = Mathf.Lerp(FL.steerAngle, steeringAngle, Time.deltaTime * turnSpeed);
         FR.steerAngle = Mathf.Lerp(FR.steerAngle, steeringAngle, Time.deltaTime * turnSpeed);
+
+        //TODO: fix steering wheel rotation
+        //steeringWheel.localEulerAngles = new Vector3(steeringWheel.localRotation.x, steeringWheel.localRotation.y, Mathf.LerpAngle(steeringWheel.localRotation.z, -(relativePos.x * 10), Time.deltaTime * 3));
     }
 
     public void move()
     {
-
 
         //turning brake lights on/off
         if (isBraking)
@@ -303,9 +314,8 @@ public class Car : MonoBehaviour
                         needToStop = false;
                         if (main.getTimer() != 0)
                         {
+                            GameObject.FindGameObjectWithTag("Player").GetComponent<Car>().incorrectReactions++;
                             main.stopTimer();
-                            incorrectReactions++;
-                            print("Correct: " + correctReactions + ", Incorrect: " + incorrectReactions);
                         }
                     }
 

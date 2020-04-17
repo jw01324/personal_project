@@ -205,7 +205,14 @@ public class Controller : MonoBehaviour
 
                         if (Input.GetKeyDown(KeyCode.Space))
                         {
-                            GameObject.FindGameObjectWithTag("Player").GetComponent<Car>().stop();
+                            if (!main.getHasStarted())
+                            {
+                                main.startScene();
+                            }
+                            else
+                            {
+                                GameObject.FindGameObjectWithTag("Player").GetComponent<Car>().stop();
+                            }
                         }
 
                         //only use the directions as inputs if the satnav is directional (otherwise uses mouse for programmable satnav type in testing)
@@ -240,7 +247,14 @@ public class Controller : MonoBehaviour
                         //right trigger pressed
                         if (OVRInput.GetDown(responseButton))
                         {
-                            GameObject.FindGameObjectWithTag("Player").GetComponent<Car>().stop();
+                            if (!main.getHasStarted())
+                            {
+                                main.startScene();
+                            }
+                            else
+                            {
+                                GameObject.FindGameObjectWithTag("Player").GetComponent<Car>().stop();
+                            }
                         }
 
 

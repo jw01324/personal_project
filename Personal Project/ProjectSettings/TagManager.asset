@@ -12,6 +12,8 @@ TagManager:
   - EndScreen
   - Axis
   - Main
+  - StartScreen
+  - SteeringWheel
   layers:
   - Default
   - TransparentFX

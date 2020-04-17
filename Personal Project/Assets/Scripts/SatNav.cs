@@ -43,17 +43,7 @@ public class SatNav : MonoBehaviour
         correctAnswers = 0;
         incorrectAnswers = 0;
 
-        assignSatNavTypeToScene();
-
-        if (intType >= 0 & intType < 4)
-        {
-            type = (SatNavType)intType;
-            print(type.ToString());
-        }
-        else
-        {
-            print("choose other number of type");
-        }
+        getSatNavType();
 
         //if not programmable type
         if (intType != 3)
@@ -68,7 +58,6 @@ public class SatNav : MonoBehaviour
 
             arrowText.SetText("");
 
-            StartCoroutine(pickDirection());
         }
         else
         {
@@ -82,71 +71,82 @@ public class SatNav : MonoBehaviour
 
     void Update()
     {
-        if (!main.getState())
+        if (main.getHasStarted())
         {
-            if (intType != 3)
+            if (!main.getState())
             {
-                arrowVisable = arrow.GetComponent<Image>().enabled;
-
-                if (startCountdown)
+                if (intType != 3)
                 {
-                    countdownTimer -= Time.deltaTime;
+                    arrowVisable = arrow.GetComponent<Image>().enabled;
 
-                    if (type == SatNavType.AUDIOVISUAL | type == SatNavType.VISUAL)
+                    if (startCountdown)
                     {
+                        countdownTimer -= Time.deltaTime;
 
-                        int viewtime = (int)countdownTimer + 1;
-                        arrowText.SetText("Time left: " + viewtime.ToString());
+                        if (type == SatNavType.AUDIOVISUAL | type == SatNavType.VISUAL)
+                        {
+
+                            int viewtime = (int)countdownTimer + 1;
+                            arrowText.SetText("Time left: " + viewtime.ToString());
+
+                            if (countdownTimer < 0)
+                            {
+                                //failed to interact in time
+                                arrowText.SetText("");
+                                arrow.GetComponent<Image>().enabled = false;
+
+                            }
+
+                        }
+
+                        if (type == SatNavType.AUDIO | type == SatNavType.AUDIOVISUAL)
+                        {
+                            if (countdownTimer < 0)
+                            {
+                                //play fail audio
+                            }
+                        }
 
                         if (countdownTimer < 0)
                         {
                             //failed to interact in time
-                            arrowText.SetText("");
-                            arrow.GetComponent<Image>().enabled = false;
-
+                            incorrectAnswers++;
+                            countdownTimer = countdownTime;
+                            StartCoroutine(PickDirection());
                         }
 
                     }
-
-                    if (type == SatNavType.AUDIO | type == SatNavType.AUDIOVISUAL)
+                    else
                     {
-                        if (countdownTimer < 0)
-                        {
-                            //play fail audio
-                        }
-                    }
-
-                    if (countdownTimer < 0)
-                    {
-                        //failed to interact in time
-                        incorrectAnswers++;
                         countdownTimer = countdownTime;
-                        StartCoroutine(pickDirection());
+
                     }
-
                 }
-                else
+                else if (intType == 3) //if the satnav is programmable type
                 {
-                    countdownTimer = countdownTime;
 
                 }
             }
-            else if(intType == 3) //if the satnav is programmable type
+            else
             {
-
-            }
-        }
-        else
-        {
-            //don't want to disable the main model but everything else needs to be disabled (screen, text, etc.)
-            for (int i = 1; i < transform.childCount; i++)
-            {
-                transform.GetChild(i).gameObject.SetActive(false);
+                //don't want to disable the main model but everything else needs to be disabled (screen, text, etc.)
+                for (int i = 1; i < transform.childCount; i++)
+                {
+                    transform.GetChild(i).gameObject.SetActive(false);
+                }
             }
         }
     }
 
-    IEnumerator pickDirection()
+    public void onStart()
+    {
+        if (intType != 3)
+        {
+            StartCoroutine(PickDirection());
+        }
+    }
+
+    IEnumerator PickDirection()
     {
         startCountdown = false;
 
@@ -279,7 +279,7 @@ public class SatNav : MonoBehaviour
                 arrowText.SetText("");
 
                 //reset arrow
-                StartCoroutine(pickDirection());
+                StartCoroutine(PickDirection());
 
 
                 return false;
@@ -291,7 +291,7 @@ public class SatNav : MonoBehaviour
                 arrowText.SetText("");
 
                 //reset arrow
-                StartCoroutine(pickDirection());
+                StartCoroutine(PickDirection());
 
                 return true;
             }
@@ -378,6 +378,18 @@ public class SatNav : MonoBehaviour
 
     public string getSatNavType()
     {
+        assignSatNavTypeToScene();
+
+        if (intType >= 0 & intType < 4)
+        {
+            type = (SatNavType)intType;
+            print(type.ToString());
+        }
+        else
+        {
+            print("choose other number of type");
+        }
+
         return "" + type;
     }
 
