@@ -172,7 +172,10 @@ public class Controller : MonoBehaviour
                 break;
 
             // scene 1, 2, 3, or 4
-            default:
+            case (2):
+            case (3):
+            case (4):
+            case (5):
 
                 if (!main.getState() & inputsEnabled)
                 {
@@ -205,22 +208,27 @@ public class Controller : MonoBehaviour
                             GameObject.FindGameObjectWithTag("Player").GetComponent<Car>().stop();
                         }
 
-                        if (Input.GetKeyDown(KeyCode.A))
+                        //only use the directions as inputs if the satnav is directional (otherwise uses mouse for programmable satnav type in testing)
+                        if (satnav.intType != 3)
                         {
-                            //left
-                            satnav.checkInputDirectionCorrect(0);
-                        }
+                            if (Input.GetKeyDown(KeyCode.A))
+                            {
+                                //left
+                                satnav.checkInputDirectionCorrect(0);
+                            }
 
-                        if (Input.GetKeyDown(KeyCode.D))
-                        {
-                            //right
-                            satnav.checkInputDirectionCorrect(1);
-                        }
+                            if (Input.GetKeyDown(KeyCode.D))
+                            {
+                                //right
+                                satnav.checkInputDirectionCorrect(1);
+                            }
 
-                        if (Input.GetKeyDown(KeyCode.W))
-                        {
-                            //up
-                            satnav.checkInputDirectionCorrect(2);
+                            if (Input.GetKeyDown(KeyCode.W))
+                            {
+                                //up
+                                satnav.checkInputDirectionCorrect(2);
+                            }
+
                         }
                     }
                     else
@@ -235,31 +243,38 @@ public class Controller : MonoBehaviour
                             GameObject.FindGameObjectWithTag("Player").GetComponent<Car>().stop();
                         }
 
-                        //left trigger pressed
-                        if (OVRInput.GetDown(selectionButton))
+
+                        //only use the directions as inputs if the satnav is directional (otherwise uses left controller input for programmable satnav type)
+                        if (satnav.intType != 3)
                         {
-                            if (isTrackingOn & isOverItem)
+                            if (OVRInput.GetDown(left))
                             {
-                                //TODO: interact with menu
+                                //left
+                                satnav.checkInputDirectionCorrect(0);
+                            }
+
+                            if (OVRInput.GetDown(right))
+                            {
+                                //right
+                                satnav.checkInputDirectionCorrect(1);
+                            }
+
+                            if (OVRInput.GetDown(up))
+                            {
+                                //up
+                                satnav.checkInputDirectionCorrect(2);
                             }
                         }
-
-                        if (OVRInput.GetDown(left))
+                        else
                         {
-                            //left
-                            satnav.checkInputDirectionCorrect(0);
-                        }
-
-                        if (OVRInput.GetDown(right))
-                        {
-                            //right
-                            satnav.checkInputDirectionCorrect(1);
-                        }
-
-                        if (OVRInput.GetDown(up))
-                        {
-                            //up
-                            satnav.checkInputDirectionCorrect(2);
+                            //left trigger pressed
+                            if (OVRInput.GetDown(selectionButton))
+                            {
+                                if (isOverItem)
+                                {
+                                    //TODO: interact with keyboard
+                                }
+                            }
                         }
                     }
                 }
@@ -306,6 +321,22 @@ public class Controller : MonoBehaviour
 
                 }
                 break;
+            
+            //case 6 which is the end screen
+            case (6):
+                if (oculusInputs)
+                {
+                    //left trigger pressed
+                    if (OVRInput.GetDown(selectionButton))
+                    {
+                        if (isOverItem)
+                        {
+                            //TODO: interact with button
+                        }
+                    }
+                }
+                break;
+
         }
 
     }

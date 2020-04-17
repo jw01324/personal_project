@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using TMPro;
 
 public class Main : MonoBehaviour
@@ -11,10 +12,13 @@ public class Main : MonoBehaviour
     //private Car incidentCar;
     private static bool isTiming;
     private static float timer;
-    private static bool done;
+    private bool done;
     private bool inMenu;
     private int attempts;
     private SatNav satnav;
+    private GameObject endscreen;
+    private TextMeshProUGUI resultsText;
+    private Slider slider;
 
     //public static FileManager fm = new FileManager();
 
@@ -26,10 +30,22 @@ public class Main : MonoBehaviour
         timer = 0;
         done = false;
 
-        satnav = GameObject.FindGameObjectWithTag("SatNav").GetComponent<SatNav>();
-        car = GameObject.FindGameObjectWithTag("Player").GetComponent<Car>();
+        if (currentScene > 1 & currentScene < 6) {
+            satnav = GameObject.FindGameObjectWithTag("SatNav").GetComponent<SatNav>();
+            car = GameObject.FindGameObjectWithTag("Player").GetComponent<Car>();
+            endscreen = GameObject.FindGameObjectWithTag("EndScreen");
 
-        print(SceneData.dataToString());
+            resultsText = endscreen.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
+            slider = endscreen.transform.GetChild(2).GetComponent<Slider>();
+            slider.maxValue = Controller.heldTime;
+
+            for (int i = 0; i < endscreen.transform.childCount; i++)
+            {
+                endscreen.transform.GetChild(i).gameObject.SetActive(false);
+            }
+
+            print(SceneData.dataToString());
+        }
     }
 
     void Update()
@@ -47,6 +63,19 @@ public class Main : MonoBehaviour
             if (isTiming)
             {
                 timer += Time.deltaTime;
+            }
+        }
+        else
+        {
+            if (Controller.timer > 0)
+            {
+                slider.gameObject.SetActive(true);
+                slider.value = Controller.timer;
+
+            }
+            else
+            {
+                slider.gameObject.SetActive(false);
             }
         }
        
@@ -81,6 +110,8 @@ public class Main : MonoBehaviour
         done = true;
         print("SCENE OVER");
 
+        Time.timeScale = 1;
+
         Result result = new Result(SceneManager.GetActiveScene().name, satnav.getSatNavType(), car.reactionTimes.ToArray(), car.correctReactions, car.incorrectReactions, satnav.correctAnswers, satnav.incorrectAnswers, car.crashed);
         print(result.toString(0));
 
@@ -88,10 +119,12 @@ public class Main : MonoBehaviour
 
         print(SceneData.dataToString());
 
-        TextMeshProUGUI resultsText = GameObject.FindGameObjectWithTag("EndScreen").transform.GetChild(0).GetComponent<TextMeshProUGUI>();
-        
-        //TODO: Display result
-        resultsText.SetText("DONE.\nHold both triggers to continue.");
+        for(int i = 0; i < endscreen.transform.childCount; i++)
+        {
+            endscreen.transform.GetChild(i).gameObject.SetActive(true);
+        }
+
+        resultsText.SetText(result.toString(0));
 
     }
 
@@ -102,6 +135,7 @@ public class Main : MonoBehaviour
 
     public void quit()
     {
+        print("quitting application");
         Application.Quit();
     }
 

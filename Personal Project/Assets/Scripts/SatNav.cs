@@ -23,9 +23,12 @@ public class SatNav : MonoBehaviour
     public AudioSource rightAudio;
     public AudioSource forwardAudio;
 
-
+    public Canvas arrowCanvas;
+    public Canvas wordCanvas;
     private Transform arrow;
-    public TextMeshProUGUI text;
+    public TextMeshProUGUI arrowText;
+    public TextMeshProUGUI wordText;
+    public TextMeshProUGUI userText;
 
     //rotation vectors for the arrow on the satnav
     private Quaternion right = Quaternion.Euler(new Vector3(0, 0, 90));
@@ -40,14 +43,6 @@ public class SatNav : MonoBehaviour
         correctAnswers = 0;
         incorrectAnswers = 0;
 
-        startCountdown = false;
-        countdownTimer = countdownTime;
-
-        arrow = GameObject.Find("Arrow").transform;
-        arrow.GetComponent<Image>().enabled = false;
-
-        text.SetText("");
-
         assignSatNavTypeToScene();
 
         if (intType >= 0 & intType < 4)
@@ -60,7 +55,28 @@ public class SatNav : MonoBehaviour
             print("choose other number of type");
         }
 
-        StartCoroutine(pickDirection());
+        //if not programmable type
+        if (intType != 3)
+        {
+            //disable the programmable satnav view
+            wordCanvas.gameObject.SetActive(false);
+            startCountdown = false;
+            countdownTimer = countdownTime;
+
+            arrow = GameObject.Find("Arrow").transform;
+            arrow.GetComponent<Image>().enabled = false;
+
+            arrowText.SetText("");
+
+            StartCoroutine(pickDirection());
+        }
+        else
+        {
+            //disable the directional satnav view
+            arrowCanvas.gameObject.SetActive(false);
+            wordText.SetText(generateWord());
+            userText.SetText("");
+        }
 
     }
 
@@ -68,48 +84,55 @@ public class SatNav : MonoBehaviour
     {
         if (!main.getState())
         {
-            arrowVisable = arrow.GetComponent<Image>().enabled;
-
-            if (startCountdown)
+            if (intType != 3)
             {
-                countdownTimer -= Time.deltaTime;
+                arrowVisable = arrow.GetComponent<Image>().enabled;
 
-                if (type == SatNavType.AUDIOVISUAL | type == SatNavType.VISUAL)
+                if (startCountdown)
                 {
+                    countdownTimer -= Time.deltaTime;
 
-                    int viewtime = (int)countdownTimer + 1;
-                    text.SetText("Time left: " + viewtime.ToString());
+                    if (type == SatNavType.AUDIOVISUAL | type == SatNavType.VISUAL)
+                    {
+
+                        int viewtime = (int)countdownTimer + 1;
+                        arrowText.SetText("Time left: " + viewtime.ToString());
+
+                        if (countdownTimer < 0)
+                        {
+                            //failed to interact in time
+                            arrowText.SetText("");
+                            arrow.GetComponent<Image>().enabled = false;
+
+                        }
+
+                    }
+
+                    if (type == SatNavType.AUDIO | type == SatNavType.AUDIOVISUAL)
+                    {
+                        if (countdownTimer < 0)
+                        {
+                            //play fail audio
+                        }
+                    }
 
                     if (countdownTimer < 0)
                     {
                         //failed to interact in time
-                        text.SetText("");
-                        arrow.GetComponent<Image>().enabled = false;
-
+                        incorrectAnswers++;
+                        countdownTimer = countdownTime;
+                        StartCoroutine(pickDirection());
                     }
 
                 }
-
-                if (type == SatNavType.AUDIO | type == SatNavType.AUDIOVISUAL)
+                else
                 {
-                    if (countdownTimer < 0)
-                    {
-                        //play fail audio
-                    }
-                }
-
-                if (countdownTimer < 0)
-                {
-                    //failed to interact in time
-                    incorrectAnswers++;
                     countdownTimer = countdownTime;
-                    StartCoroutine(pickDirection());
-                }
 
+                }
             }
-            else
+            else if(intType == 3) //if the satnav is programmable type
             {
-                countdownTimer = countdownTime;
 
             }
         }
@@ -253,7 +276,7 @@ public class SatNav : MonoBehaviour
             {
                 //incorrect input
                 incorrectAnswers++;
-                text.SetText("");
+                arrowText.SetText("");
 
                 //reset arrow
                 StartCoroutine(pickDirection());
@@ -265,7 +288,7 @@ public class SatNav : MonoBehaviour
             {
                 //correct input
                 correctAnswers++;
-                text.SetText("");
+                arrowText.SetText("");
 
                 //reset arrow
                 StartCoroutine(pickDirection());
@@ -277,10 +300,70 @@ public class SatNav : MonoBehaviour
         {
             //incorrect input (no arrow to follow)
             incorrectAnswers++;
-            text.SetText("");
+            arrowText.SetText("");
             return false;
         }
 
+    }
+
+    /*
+     * method for generating a random word for the programmable satnav that the user can type in
+     */ 
+    public string generateWord()
+    {
+        char[] letters = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
+
+        string s = "";
+
+        for(int i = 0; i < 2; i++)
+        {
+            //choose random letter to add to the string
+            s += letters[Random.Range(0, letters.Length)];
+        }
+
+        for (int i = 0; i < 3; i++)
+        {
+            if(i == 1)
+            {
+                //add the space in the postcode
+                s += " ";
+            }
+            else
+            {
+                //add a random number between 0 and 10 (integers ranging from 0 to 9)
+                s += (int)Random.Range(0, 10);
+            }
+        }
+
+        for (int i = 0; i < 2; i++)
+        {
+            //choose random letter to add to the string
+            s += letters[Random.Range(0, letters.Length)];
+        }
+
+        return s;
+    }
+
+    public void submitWord()
+    {
+        //converting user input and generated word to the same format (so the user doesn't have to type it exactly the same)
+        string userInput = userText.text.Replace(" ", string.Empty);
+        userInput = userInput.ToLower();
+        string word = wordText.text.Replace(" ", string.Empty);
+        word = word.ToLower();
+
+        if (userInput == word)
+        {
+            correctAnswers++;
+            print("correct");
+            wordText.SetText(generateWord());
+            userText.SetText("");
+        }
+        else
+        {
+            incorrectAnswers++;
+            print("wrong");
+        }
     }
 
     /*
@@ -290,17 +373,6 @@ public class SatNav : MonoBehaviour
     {
 
         intType = SceneData.satNavOrder[SceneManager.GetActiveScene().buildIndex - 2];
-
-        /*
-        switch (SceneManager.GetActiveScene().buildIndex)
-        {
-            case (2):
-                break;
-            case (3):
-                break:
-
-        }
-        */
         
     }
 
