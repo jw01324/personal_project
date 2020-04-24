@@ -28,13 +28,15 @@ public class Main : MonoBehaviour
 
     void Start()
     {
+
         currentScene = SceneManager.GetActiveScene().buildIndex;
         hasStarted = false;
         isTiming = false;
         timer = 0;
         done = false;
 
-        if (currentScene > 1 & currentScene < 6) {
+        if (currentScene > 1 & currentScene < 6)
+        {
 
             mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
             mainCamera.clearFlags = CameraClearFlags.SolidColor;
@@ -67,6 +69,13 @@ public class Main : MonoBehaviour
                     break;
             }
 
+            //if the satnav type is anything other than programmable then turn off the UI helper for the controllers (laser pointer, etc)
+            if (satnav.intType < 3)
+            {
+                //turn the laser pointer for the left controller on (to select keys in virtual keyboard)
+                GameObject.FindGameObjectWithTag("UIhelper").SetActive(false);
+
+            }
 
             startText = startScreen.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
             startText.SetText(introduction);
@@ -85,13 +94,15 @@ public class Main : MonoBehaviour
 
     void Update()
     {
-
-        if (Controller.inputsEnabled)
-        {
-            startScreen.transform.GetChild(1).gameObject.SetActive(true);
-        }
-
         currentScene = SceneManager.GetActiveScene().buildIndex;
+
+        if (currentScene > 1 & currentScene < 6)
+        {
+            if (Controller.inputsEnabled)
+            {
+                startScreen.transform.GetChild(1).gameObject.SetActive(true);
+            }
+        }
 
         if (!done)
         {
@@ -113,7 +124,7 @@ public class Main : MonoBehaviour
                 slider.gameObject.SetActive(false);
             }
         }
-       
+
     }
 
     public void startTimer()
@@ -192,7 +203,7 @@ public class Main : MonoBehaviour
     {
         //value of the next scenes index
         int index = SceneManager.GetActiveScene().buildIndex + 1;
-    
+
         print(index);
         print(SceneManager.sceneCountInBuildSettings);
 
@@ -207,7 +218,7 @@ public class Main : MonoBehaviour
             print("no more scenes");
         }
 
-       
+
     }
 
     public void startScene()

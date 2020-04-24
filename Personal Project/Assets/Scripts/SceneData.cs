@@ -13,7 +13,7 @@ public class SceneData
 
     public static string userID;
     //setting default satnav order to do audiovisual for all scenes as that's best for testing (if i start the app from scene 1 without generating an order then this is handy)
-    public static int[] satNavOrder = { 2,2,2,2 };
+    public static int[] satNavOrder = { 2, 2, 2, 2 };
     public static int[] controlTimes = new int[5];
     public static List<Result> results = new List<Result>();
 
@@ -68,7 +68,7 @@ public class SceneData
         {
             return 0;
         }
-        
+
     }
 
     public static string dataToString()
@@ -78,7 +78,7 @@ public class SceneData
 
         //TODO: convert all the scene data to a string that can be written to a file and be readable.
 
-        s += ("ID: " + userID + "\n" + "Control Times: " + controlTimesToString() + ", Average = " + getAverageControlTime() + ", Median = " + getMedianControlTime() + "\n\n" 
+        s += ("ID: " + userID + "\n" + "Control Times: " + controlTimesToString() + ", Average = " + getAverageControlTime() + ", Median = " + getMedianControlTime() + "\n\n"
             + "Order:\n" + orderToString() + "\n" + resultsToString());
 
         return s;
@@ -101,7 +101,7 @@ public class SceneData
     {
         string s = "[";
 
-        for(int i = 0; i < controlTimes.Length - 1; i++)
+        for (int i = 0; i < controlTimes.Length - 1; i++)
         {
             s += (controlTimes[i] + ", ");
         }
@@ -115,7 +115,7 @@ public class SceneData
     {
         string s = "";
 
-        for(int i = 0; i < results.Count; i++)
+        for (int i = 0; i < results.Count; i++)
         {
             s += ("Result" + (i + 1) + ": " + results[i].toString(0) + "\n\n");
         }

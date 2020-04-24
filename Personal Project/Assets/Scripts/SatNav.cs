@@ -119,7 +119,7 @@ public class SatNav : MonoBehaviour
                     else
                     {
                         countdownTimer = countdownTime;
-
+                        arrowText.SetText("");
                     }
                 }
                 else if (intType == 3) //if the satnav is programmable type

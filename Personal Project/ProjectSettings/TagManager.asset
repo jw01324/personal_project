@@ -14,6 +14,7 @@ TagManager:
   - Main
   - StartScreen
   - SteeringWheel
+  - UIhelper
   layers:
   - Default
   - TransparentFX

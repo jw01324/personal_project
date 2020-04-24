@@ -5,7 +5,7 @@ using UnityEngine;
 public class Controller : MonoBehaviour
 {
     //whether I am using my keyboard in testing mode or whether the inputs are for the oculus
-    public bool oculusInputs;
+    private bool oculusInputs;
 
     private OVRInput.Button selectionButton = OVRInput.Button.PrimaryIndexTrigger;
     private OVRInput.Button responseButton = OVRInput.Button.SecondaryIndexTrigger;
@@ -28,6 +28,15 @@ public class Controller : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //code to detect if I am testing the app on computer or on the oculus device (which is android)
+        #if UNITY_EDITOR
+                oculusInputs = false;
+                print("Editor");
+        #elif UNITY_ANDROID
+                oculusInputs = true;
+                print("Oculus");
+        #endif
+
         main = GameObject.FindGameObjectWithTag("Main").GetComponent<Main>();
 
         inputsEnabled = false;
@@ -47,6 +56,16 @@ public class Controller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //the developer menu needs to be accessible from any scene so it goes outside of the switch statement
+        if (oculusInputs)
+        {
+            //holding down B, C, left trigger, and right hand trigger all at once (an input that is very unlikely for a person to do)
+            if (OVRInput.Get(OVRInput.Button.Three) & OVRInput.Get(OVRInput.Button.Two) & OVRInput.Get(selectionButton) & OVRInput.Get(OVRInput.Button.SecondaryHandTrigger))
+            {
+                //take to the secret menu (used only by the developer for testing purposes)
+                main.loadScene("DeveloperMenu");
+            }
+        }
 
         switch (Main.currentScene)
         {
@@ -93,12 +112,6 @@ public class Controller : MonoBehaviour
                         timer = 0;
                     }
 
-                    //holding down A, B, and the left trigger all at once
-                    if (OVRInput.Get(OVRInput.Button.One) & OVRInput.Get(OVRInput.Button.Two) & OVRInput.Get(selectionButton))
-                    {
-                        //take to the secret menu (used only by the developer for testing purposes)
-                        main.loadScene("MainMenu");
-                    }
                 }
                 break;
             
