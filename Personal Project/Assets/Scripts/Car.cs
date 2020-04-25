@@ -11,7 +11,7 @@ public class Car : MonoBehaviour
     private Waypoint path;
     private Coordinate currentCoordinate;
     private Rigidbody rb;
-    public static float lightIntensity = 7f;
+    public static float lightIntensity = 15f;
     private float currentSpeed;
     private float maxSpeed;
     private float minSpeed;

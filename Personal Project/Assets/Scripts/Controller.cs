@@ -22,6 +22,7 @@ public class Controller : MonoBehaviour
 
     private SatNav satnav;
     public static float timer;
+    private float developerTimer;
     public static float heldTime = 2f;
 
 
@@ -40,6 +41,7 @@ public class Controller : MonoBehaviour
         main = GameObject.FindGameObjectWithTag("Main").GetComponent<Main>();
 
         inputsEnabled = false;
+        developerTimer = 0;
         timer = 0;
         isTrackingOn = false;
         isOverItem = false;
@@ -62,8 +64,18 @@ public class Controller : MonoBehaviour
             //holding down B, C, left trigger, and right hand trigger all at once (an input that is very unlikely for a person to do)
             if (OVRInput.Get(OVRInput.Button.Three) & OVRInput.Get(OVRInput.Button.Two) & OVRInput.Get(selectionButton) & OVRInput.Get(OVRInput.Button.SecondaryHandTrigger))
             {
-                //take to the secret menu (used only by the developer for testing purposes)
-                main.loadScene("DeveloperMenu");
+                developerTimer += Time.deltaTime;
+
+                if (developerTimer >= heldTime)
+                {
+                    //take to the secret menu (used only by the developer for testing purposes)
+                    main.loadScene("DeveloperMenu");
+                }
+
+            }
+            else
+            {
+                developerTimer = 0;
             }
         }
 
