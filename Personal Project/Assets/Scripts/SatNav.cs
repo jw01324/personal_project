@@ -123,10 +123,7 @@ public class SatNav : MonoBehaviour
                         arrowText.SetText("");
                     }
                 }
-                else if (intType == 3) //if the satnav is programmable type
-                {
 
-                }
             }
             else
             {
@@ -155,7 +152,7 @@ public class SatNav : MonoBehaviour
 
         yield return new WaitForSeconds(sec);
 
-        if (!main.getState())
+        if (!main.getState() | !main.isTiming)
         {
 
             int r = Random.Range(0, 3);
@@ -259,7 +256,7 @@ public class SatNav : MonoBehaviour
         }
         else
         {
-            //do nothing as it is over
+            //do nothing as the test is ending or is over already
         }
     }
 

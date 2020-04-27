@@ -207,7 +207,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_FirstSelected: {fileID: 0}
   m_sendNavigationEvents: 0
-  m_DragThreshold: 5
+  m_DragThreshold: 0
 --- !u!114 &4128986489652050488
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -222,7 +222,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rayTransform: {fileID: 0}
   m_Cursor: {fileID: 4129332806888834784}
-  joyPadClickButton: 1
+  joyPadClickButton: 0
   gazeClickKey: 0
   performSphereCastForGazepointer: 0
   useRightStickScroll: 0
@@ -238,7 +238,7 @@ MonoBehaviour:
   m_SubmitButton: Submit
   m_CancelButton: Cancel
   m_InputActionsPerSecond: 10
-  m_AllowActivationOnMobileDevice: 1
+  m_AllowActivationOnMobileDevice: 0
 --- !u!1 &4097530933070746424
 GameObject:
   m_ObjectHideFlags: 0

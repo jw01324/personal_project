@@ -22446,6 +22446,31 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4129309329086448198, guid: 77c75f0594cd119458bb7721446206e0,
+        type: 3}
+      propertyPath: m_sendNavigationEvents
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4128986489652050488, guid: 77c75f0594cd119458bb7721446206e0,
+        type: 3}
+      propertyPath: m_HorizontalAxis
+      value: Horizontal
+      objectReference: {fileID: 0}
+    - target: {fileID: 4128986489652050488, guid: 77c75f0594cd119458bb7721446206e0,
+        type: 3}
+      propertyPath: m_VerticalAxis
+      value: Vertical
+      objectReference: {fileID: 0}
+    - target: {fileID: 4128986489652050488, guid: 77c75f0594cd119458bb7721446206e0,
+        type: 3}
+      propertyPath: m_SubmitButton
+      value: Submit
+      objectReference: {fileID: 0}
+    - target: {fileID: 4128986489652050488, guid: 77c75f0594cd119458bb7721446206e0,
+        type: 3}
+      propertyPath: m_CancelButton
+      value: Cancel
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 77c75f0594cd119458bb7721446206e0, type: 3}
 --- !u!1 &2035033061
@@ -25814,6 +25839,11 @@ PrefabInstance:
       propertyPath: pointer
       value: 
       objectReference: {fileID: 1619146083}
+    - target: {fileID: 7096062270317263453, guid: 494d4446325769c4a9976cc446300afc,
+        type: 3}
+      propertyPath: m_OverrideSorting
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 494d4446325769c4a9976cc446300afc, type: 3}
 --- !u!1001 &2652934824188384307

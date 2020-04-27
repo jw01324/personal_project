@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.Android;
 
 public class StartScene : MonoBehaviour
 {
@@ -13,6 +14,14 @@ public class StartScene : MonoBehaviour
 
     private void Start()
     {
+        //getting permission to write to external storage
+        #if UNITY_ANDROID
+            if (!Permission.HasUserAuthorizedPermission(Permission.ExternalStorageWrite))
+            {
+                Permission.RequestUserPermission(Permission.ExternalStorageWrite);
+            }
+        #endif
+
         //if no user id given yet, then generate one.
         if (userID.Equals("") || userID == "")
         {

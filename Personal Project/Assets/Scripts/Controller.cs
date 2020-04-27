@@ -7,8 +7,11 @@ public class Controller : MonoBehaviour
     //whether I am using my keyboard in testing mode or whether the inputs are for the oculus
     private bool oculusInputs;
 
-    private OVRInput.Button selectionButton = OVRInput.Button.PrimaryIndexTrigger;
-    private OVRInput.Button responseButton = OVRInput.Button.SecondaryIndexTrigger;
+    //either A or B can be used to respond to events
+    private OVRInput.Button responseButtonA = OVRInput.Button.One;
+    private OVRInput.Button responseButtonB = OVRInput.Button.Two;
+
+    //thumbstick directions for the directional satnav inputs
     private OVRInput.Button left = OVRInput.Button.PrimaryThumbstickLeft;
     private OVRInput.Button right = OVRInput.Button.PrimaryThumbstickRight;
     private OVRInput.Button up = OVRInput.Button.PrimaryThumbstickUp;
@@ -61,8 +64,8 @@ public class Controller : MonoBehaviour
         //the developer menu needs to be accessible from any scene so it goes outside of the switch statement
         if (oculusInputs)
         {
-            //holding down B, C, left trigger, and right hand trigger all at once (an input that is very unlikely for a person to do)
-            if (OVRInput.Get(OVRInput.Button.Three) & OVRInput.Get(OVRInput.Button.Two) & OVRInput.Get(selectionButton) & OVRInput.Get(OVRInput.Button.SecondaryHandTrigger))
+            //holding down C, left trigger, and right hand trigger all at once (an input that is very unlikely for a person to do)
+            if (OVRInput.Get(OVRInput.Button.Three) & OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger) & OVRInput.Get(OVRInput.Button.SecondaryHandTrigger))
             {
                 developerTimer += Time.deltaTime;
 
@@ -108,7 +111,7 @@ public class Controller : MonoBehaviour
                 else
                 {
                     //require specific input to continue to next scene (both triggers held down)
-                    if (OVRInput.Get(responseButton) & OVRInput.Get(selectionButton))
+                    if (OVRInput.Get(responseButtonA) | OVRInput.Get(responseButtonB))
                     {
 
                         timer += Time.deltaTime;
@@ -168,7 +171,7 @@ public class Controller : MonoBehaviour
                         if (ControlScene.done)
                         {
                             //require specific input to continue to next scene (both triggers held down)
-                            if (OVRInput.Get(responseButton) & OVRInput.Get(selectionButton))
+                            if (OVRInput.Get(responseButtonA) | OVRInput.Get(responseButtonB))
                             {
 
                                 timer += Time.deltaTime;
@@ -186,7 +189,7 @@ public class Controller : MonoBehaviour
                         }
                         else
                         {
-                            if (OVRInput.GetDown(responseButton))
+                            if (OVRInput.GetDown(responseButtonA) | OVRInput.GetDown(responseButtonB))
                             {
                                 GameObject.FindGameObjectWithTag("Player").GetComponent<ControlScene>().userReacts();
                             }
@@ -270,7 +273,7 @@ public class Controller : MonoBehaviour
                          */
 
                         //right trigger pressed
-                        if (OVRInput.GetDown(responseButton))
+                        if (OVRInput.GetDown(responseButtonA) | OVRInput.GetDown(responseButtonB))
                         {
                             if (!main.getHasStarted())
                             {
@@ -304,17 +307,7 @@ public class Controller : MonoBehaviour
                                 satnav.checkInputDirectionCorrect(2);
                             }
                         }
-                        else
-                        {
-                            //left trigger pressed
-                            if (OVRInput.GetDown(selectionButton))
-                            {
-                                if (isOverItem)
-                                {
-                                    //TODO: interact with keyboard
-                                }
-                            }
-                        }
+
                     }
                 }
                 else if (main.getState())
@@ -340,8 +333,14 @@ public class Controller : MonoBehaviour
                     }
                     else
                     {
+                        //if it is the last driving scene & it's on the oculus then save the results file
+                        if (Main.currentScene + 1 == 6)
+                        {
+                            FileManager.createResultFile();
+                        }
+
                         //require specific input to continue to next scene (both triggers held down)
-                        if (OVRInput.Get(responseButton) & OVRInput.Get(selectionButton))
+                        if (OVRInput.Get(responseButtonA) | OVRInput.Get(responseButtonB))
                         {
 
                             timer += Time.deltaTime;
@@ -360,22 +359,7 @@ public class Controller : MonoBehaviour
 
                 }
                 break;
-            
-            //case 6 which is the end screen
-            case (6):
-                if (oculusInputs)
-                {
-                    //left trigger pressed
-                    if (OVRInput.GetDown(selectionButton))
-                    {
-                        if (isOverItem)
-                        {
-                            //TODO: interact with button
-                        }
-                    }
-                }
-                break;
-
+           
         }
 
     }

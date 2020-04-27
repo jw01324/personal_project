@@ -16013,6 +16013,16 @@ PrefabInstance:
       propertyPath: pointer
       value: 
       objectReference: {fileID: 1923995210}
+    - target: {fileID: 1002196690392167102, guid: 494d4446325769c4a9976cc446300afc,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9135949327503981002, guid: 494d4446325769c4a9976cc446300afc,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6167295069830717055, guid: 494d4446325769c4a9976cc446300afc,
         type: 3}
       propertyPath: m_textInfo.characterCount

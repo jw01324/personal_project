@@ -4,25 +4,23 @@ using UnityEngine;
 using System.IO;
 using System;
 
-public class FileManager 
-{
+public class FileManager
+{ 
+   
+    public static string path =  "/sdcard/" + SceneData.userID + "/results.txt";
 
-    /*
-    string path = Application.persistentDataPath + "./Data/" + StartScene.userID + "/";
-
-    public bool createResultFile(Result result, int type)
+    public static bool createResultFile()
     {
 
         try
         {
-            string filepath = path + result.toString(2);
 
-            if (!File.Exists(filepath))
+            if (!File.Exists(path))
             {
-                File.WriteAllText(filepath, "");
+                File.WriteAllText(path, "");
             }
 
-            File.AppendAllText(filepath, result.toString(type));
+            File.AppendAllText(path, SceneData.dataToString());
 
             return true;
 
@@ -34,5 +32,5 @@ public class FileManager
  
     }
 
-    */
+    
 }

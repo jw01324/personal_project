@@ -11,7 +11,7 @@ public class Main : MonoBehaviour
     public static int currentScene;
     private Car car;
     private bool hasStarted;
-    private static bool isTiming;
+    public bool isTiming;
     private static float timer;
     private bool done;
     private bool inMenu;
@@ -51,21 +51,22 @@ public class Main : MonoBehaviour
             startScreen.transform.GetChild(2).GetComponent<TextMeshProUGUI>().SetText("Scene: " + SceneManager.GetActiveScene().name + "\nSatNav Type: " + satnav.getSatNavType());
 
             string introduction = "This is a car driving simulation. The car will drive by itself, following the car in front, all you need to do is:" +
-                "\n- Press the right trigger when you spot the car in front braking. This will happen on multiple occasions during the scene.\n";
+                "\n- Press the A or B button on the Right Controller when you spot the car in front braking. This will happen on multiple occasions during the scene.\n";
 
             switch (satnav.intType)
             {
                 case (0): //audio type
-                    introduction += "- Move the left trigger in the direction that the SatNav says. This will be an audio cue, you will have 3 seconds to react to each cue, there will be no visual indicator.\n";
+                    introduction += "- Move the left thumbstick in the direction that the SatNav says. This will be an audio cue, you will have 3 seconds to react to each cue, there will be no visual indicator.\n";
+                    satnav.gameObject.transform.GetChild(1).gameObject.SetActive(false); // turn the display off when satnav is audio only
                     break;
                 case (1): //visual type
-                    introduction += "- Move the left trigger in the direction that the SatNav displays. This will be a visual cue on the SatNav display in the car, you will have 3 seconds to react to each cue, there will be no audio indicator.\n";
+                    introduction += "- Move the left thumbstick in the direction that the SatNav displays. This will be a visual cue on the SatNav display in the car, you will have 3 seconds to react to each cue, there will be no audio indicator.\n";
                     break;
                 case (2): //audiovisual type
-                    introduction += "- Move the left trigger in the direction that the SatNav displays. This will be a visual and audio cue on the SatNav display in the car, you will have 3 seconds to react to each cue.\n";
+                    introduction += "- Move the left thumbstick in the direction that the SatNav displays. This will be a visual and audio cue on the SatNav display in the car, you will have 3 seconds to react to each cue.\n";
                     break;
                 case (3): //programmable type
-                    introduction += "- Aim the left controller at the virtual keyboard and type in the word displayed on the SatNav, clicking the 'enter' button on the keyboard to submit the word. If you are correct, another word will be displayed. If you are incorrect, please retype the word.\n";
+                    introduction += "- Aim the left controller at the virtual keyboard and press the left trigger or the right trigger to type in characters on the keyboard. Once you have typed the postcode displayed on the SatNav, click the 'submit' button on the keyboard to submit the word. If you are correct, another word will be displayed. If you are incorrect, please retype the word. You can use the backspace key to delete characters.\n";
                     break;
             }
 
@@ -204,12 +205,6 @@ public class Main : MonoBehaviour
         {
             SceneManager.LoadScene(index);
         }
-        else
-        {
-            //TODO: add an end scene? graphic with results and option to restart?
-            print("no more scenes");
-        }
-
 
     }
 
@@ -234,16 +229,4 @@ public class Main : MonoBehaviour
         return hasStarted;
     }
 
-
-    /**
-    public void saveTestResultToFile(Result result)
-    {
-        fm.createResultFile(result, 0);
-    }
-
-    public void saveSceneResultToFile(Result result)
-    { 
-        fm.createResultFile(result, 1);
-    }
-    */
 }
