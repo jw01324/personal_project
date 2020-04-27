@@ -46,7 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cursorVisual: {fileID: 4097530933070746424}
   maxLength: 100
-  _laserBeamBehavior: 0
+  _laserBeamBehavior: 2
 --- !u!120 &4139485886752243726
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -64,7 +64,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 669025377795b574da66d9bb2472fcab, type: 2}
+  - {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -84,7 +84,7 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_Positions:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 1}
@@ -96,13 +96,31 @@ LineRenderer:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0.9816513
-        inSlope: 0
-        outSlope: 0
+        value: 1
+        inSlope: -16.203127
+        outSlope: -16.203127
         tangentMode: 0
         weightedMode: 0
         inWeight: 0.33333334
-        outWeight: 0.33333334
+        outWeight: 0.3601218
+      - serializedVersion: 3
+        time: 0.12139183
+        value: 0.13391933
+        inSlope: -0.42464566
+        outSlope: -0.42464566
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.1728099
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: 0.055253606
+        outSlope: 0.055253606
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.30917042
+        outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
@@ -204,7 +222,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rayTransform: {fileID: 0}
   m_Cursor: {fileID: 4129332806888834784}
-  joyPadClickButton: 8192
+  joyPadClickButton: 1
   gazeClickKey: 0
   performSphereCastForGazepointer: 0
   useRightStickScroll: 0
@@ -248,7 +266,7 @@ Transform:
   m_GameObject: {fileID: 4097530933070746424}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.114258334, y: 0.114258334, z: 0.114258334}
+  m_LocalScale: {x: 0.00524358, y: 0.00524358, z: 0.00524358}
   m_Children: []
   m_Father: {fileID: 4091897792264499098}
   m_RootOrder: 1

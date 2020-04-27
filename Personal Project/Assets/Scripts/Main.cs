@@ -69,14 +69,6 @@ public class Main : MonoBehaviour
                     break;
             }
 
-            //if the satnav type is anything other than programmable then turn off the UI helper for the controllers (laser pointer, etc)
-            if (satnav.intType < 3)
-            {
-                //turn the laser pointer for the left controller on (to select keys in virtual keyboard)
-                GameObject.FindGameObjectWithTag("UIhelper").SetActive(false);
-
-            }
-
             startText = startScreen.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
             startText.SetText(introduction);
             resultsText = endScreen.transform.GetChild(0).GetComponent<TextMeshProUGUI>();

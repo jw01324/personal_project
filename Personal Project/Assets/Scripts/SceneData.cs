@@ -13,7 +13,7 @@ public class SceneData
 
     public static string userID;
     //setting default satnav order to do audiovisual for all scenes as that's best for testing (if i start the app from scene 1 without generating an order then this is handy)
-    public static int[] satNavOrder = { 3, 2, 2, 2 };
+    public static int[] satNavOrder = { 2, 2, 2, 2 };
     public static int[] controlTimes = new int[5];
     public static List<Result> results = new List<Result>();
 

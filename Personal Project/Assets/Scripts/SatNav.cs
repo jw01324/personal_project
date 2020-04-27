@@ -63,8 +63,9 @@ public class SatNav : MonoBehaviour
         {
             //disable the directional satnav view
             arrowCanvas.gameObject.SetActive(false);
-            wordText.SetText(generateWord());
-            userText.SetText("");
+            wordText.text = "";
+            wordText.text = generateWord();
+            userText.text = "";
         }
 
     }
@@ -347,23 +348,25 @@ public class SatNav : MonoBehaviour
     public void submitWord()
     {
         //converting user input and generated word to the same format (so the user doesn't have to type it exactly the same)
-        string userInput = userText.text.Replace(" ", string.Empty);
-        userInput = userInput.ToLower();
+        string input = userText.text.Replace(" ", string.Empty);
+        input = input.ToLower();
         string word = wordText.text.Replace(" ", string.Empty);
         word = word.ToLower();
 
-        if (userInput == word)
+        if (string.Equals(input, word))
         {
             correctAnswers++;
             print("correct");
-            wordText.SetText(generateWord());
-            userText.SetText("");
+            wordText.text = generateWord();
+            userText.text = "";
         }
         else
         {
             incorrectAnswers++;
             print("wrong");
         }
+
+        //userText.text = "[" + input + "-" + word + "]";
     }
 
     /*
