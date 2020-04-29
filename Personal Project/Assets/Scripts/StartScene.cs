@@ -15,11 +15,22 @@ public class StartScene : MonoBehaviour
     private void Start()
     {
         //getting permission to write to external storage
+        /*
         #if UNITY_ANDROID
             if (!Permission.HasUserAuthorizedPermission(Permission.ExternalStorageWrite))
             {
                 Permission.RequestUserPermission(Permission.ExternalStorageWrite);
             }
+        #endif
+        */
+
+        //code to detect if I am testing the app on computer or on the oculus device (which is android)
+        #if UNITY_EDITOR
+            SceneData.isOnOculus = false;
+            print("Editor");
+        #elif UNITY_ANDROID
+            SceneData.isOnOculus = true;
+            print("Oculus");
         #endif
 
         //if no user id given yet, then generate one.
@@ -33,6 +44,11 @@ public class StartScene : MonoBehaviour
         idtext.SetText("User ID: " + userID);
 
         SceneData.satNavOrder = generateSatNavOrder();
+
+        //create a text file for test purposes
+        FileManager.createDirectory();
+        FileManager.createResultFile();
+
 
     }
 

@@ -11,6 +11,8 @@ public class SceneData
      * This also means that read and writing of data doesn't need to be done when each scene is loaded in.
      */
 
+    //variable to hold whether the application is playing in the pc editor or on the oculus device (used to differentiate controls and file save paths)
+    public static bool isOnOculus;
     public static string userID;
     //setting default satnav order to do audiovisual for all scenes as that's best for testing (if i start the app from scene 1 without generating an order then this is handy)
     public static int[] satNavOrder = { 2, 2, 2, 2 };

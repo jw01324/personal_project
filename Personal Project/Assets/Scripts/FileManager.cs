@@ -5,29 +5,52 @@ using System.IO;
 using System;
 
 public class FileManager
-{ 
-   
-    public static string path =  "/sdcard/" + SceneData.userID + "/results.txt";
+{
 
-    public static bool createResultFile()
+    public static string folderPath;
+
+    public static void createDirectory()
+    {
+        if (!SceneData.isOnOculus)
+        {
+            //pc path
+            folderPath = "Assets/Resources/TestData/ID" + SceneData.userID;
+        }
+        else
+        {
+            //oculus path
+            folderPath = Application.persistentDataPath + "/TestData/ID" + SceneData.userID;
+        }
+
+        //checks if the folder exists, if not then create it
+        if (!Directory.Exists(folderPath))
+        {
+            Directory.CreateDirectory(folderPath);
+            Debug.Log("folder created");
+        }
+        else
+        {
+            Debug.Log("folder already exists");
+        }
+    }
+
+    public static void createResultFile()
     {
 
-        try
-        {
+        try {
 
-            if (!File.Exists(path))
-            {
-                File.WriteAllText(path, "");
-            }
+            //filepath
+            string filePath = folderPath + "/Result_" + DateTime.Now.ToString("dd-MM-yy_HHmm") + ".txt";
 
-            File.AppendAllText(path, SceneData.dataToString());
+            //write results to file (results.txt)
+            File.WriteAllText(filePath, SceneData.dataToString(), System.Text.Encoding.ASCII);
 
-            return true;
+            Debug.Log("file created");
 
         }catch(Exception e)
         {
 
-            return false;
+            Debug.LogError(e);
         }
  
     }

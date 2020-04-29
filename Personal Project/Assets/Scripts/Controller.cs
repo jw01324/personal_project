@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class Controller : MonoBehaviour
 {
-    //whether I am using my keyboard in testing mode or whether the inputs are for the oculus
-    private bool oculusInputs;
 
     //either A or B can be used to respond to events
     private OVRInput.Button responseButtonA = OVRInput.Button.One;
@@ -18,6 +16,7 @@ public class Controller : MonoBehaviour
 
     private Main main;
 
+    private bool saveIsDone;
     private bool isTrackingOn;
     private bool isOverItem;
     private bool isLoadingScene;
@@ -32,17 +31,10 @@ public class Controller : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //code to detect if I am testing the app on computer or on the oculus device (which is android)
-        #if UNITY_EDITOR
-                oculusInputs = false;
-                print("Editor");
-        #elif UNITY_ANDROID
-                oculusInputs = true;
-                print("Oculus");
-        #endif
 
         main = GameObject.FindGameObjectWithTag("Main").GetComponent<Main>();
 
+        saveIsDone = false;
         inputsEnabled = false;
         developerTimer = 0;
         timer = 0;
@@ -62,7 +54,7 @@ public class Controller : MonoBehaviour
     void Update()
     {
         //the developer menu needs to be accessible from any scene so it goes outside of the switch statement
-        if (oculusInputs)
+        if (SceneData.isOnOculus)
         {
             //holding down C, left trigger, and right hand trigger all at once (an input that is very unlikely for a person to do)
             if (OVRInput.Get(OVRInput.Button.Three) & OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger) & OVRInput.Get(OVRInput.Button.SecondaryHandTrigger))
@@ -87,7 +79,7 @@ public class Controller : MonoBehaviour
             // start screen
             case (0):
                 
-                if (!oculusInputs)
+                if (!SceneData.isOnOculus)
                 {
                     if (Input.GetKey(KeyCode.Space))
                     {
@@ -135,7 +127,7 @@ public class Controller : MonoBehaviour
 
                 if (inputsEnabled)
                 {
-                    if (!oculusInputs)
+                    if (!SceneData.isOnOculus)
                     {
                         if (ControlScene.done)
                         {
@@ -207,7 +199,7 @@ public class Controller : MonoBehaviour
 
                 if (!main.getState() & inputsEnabled)
                 {
-                    if (!oculusInputs)
+                    if (!SceneData.isOnOculus)
                     {
                         /*
                          * Controls for changing the time scale in testing (to quickly get to a specific point)
@@ -312,8 +304,18 @@ public class Controller : MonoBehaviour
                 }
                 else if (main.getState())
                 {
-                    if (!oculusInputs)
+                    if (!SceneData.isOnOculus)
                     {
+                        //if it is the last driving scene then save the results file
+                        if (Main.currentScene + 1 == 6 & !saveIsDone)
+                        {
+
+                            //create a text file with the results
+                            FileManager.createResultFile();
+                            saveIsDone = true;
+
+                        }
+
                         if (Input.GetKey(KeyCode.Space) & !isLoadingScene)
                         {
 
@@ -334,9 +336,13 @@ public class Controller : MonoBehaviour
                     else
                     {
                         //if it is the last driving scene & it's on the oculus then save the results file
-                        if (Main.currentScene + 1 == 6)
+                        if (Main.currentScene + 1 == 6 & !saveIsDone)
                         {
+
+                            //create a text file with the results
                             FileManager.createResultFile();
+                            saveIsDone = true;
+
                         }
 
                         //require specific input to continue to next scene (both triggers held down)
