@@ -15,6 +15,9 @@ TagManager:
   - StartScreen
   - SteeringWheel
   - UIhelper
+  - Keyboard
+  - Correct_SFX
+  - Engine_SFX
   layers:
   - Default
   - TransparentFX

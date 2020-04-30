@@ -34,6 +34,9 @@ public class Car : MonoBehaviour
     private float prevRotation;
     private int frames;
 
+    private AudioSource correctSound;
+    private AudioSource engineSound;
+
     public WheelCollider FL;
     public WheelCollider FR;
     public WheelCollider RL;
@@ -71,6 +74,10 @@ public class Car : MonoBehaviour
         rb = gameObject.GetComponent<Rigidbody>();
         rb.centerOfMass = centerOfMass.localPosition;
 
+        correctSound = GameObject.FindGameObjectWithTag("Correct_SFX").GetComponent<AudioSource>();
+        engineSound = GameObject.FindGameObjectWithTag("Engine_SFX").GetComponent<AudioSource>();
+
+
         maxSteeringAngle = 45; //degrees
         maxTorque = 150f;
         maxBrakingTorque = 100000f;
@@ -103,6 +110,8 @@ public class Car : MonoBehaviour
                 currentSpeed = (transform.position - previousPosition).magnitude / Time.deltaTime;
                 //print(gameObject.tag + ": " + currentSpeed + "m/s, " + angularVelocity + "rad/s");
                 previousPosition = transform.position;
+
+                engineSound.pitch = normaliseValues(currentSpeed, -maxSpeed, maxSpeed);
 
                 if (isFollowingPath)
                 {
@@ -253,6 +262,9 @@ public class Car : MonoBehaviour
             int time = (int) (main.stopTimer() * 1000);
             print("Reaction Time (ms): " + time);
             reactionTimes.Add(time);
+
+            correctSound.Play();
+
             hasBraked = true;
 
         }
@@ -355,6 +367,7 @@ public class Car : MonoBehaviour
         {
 
             StartCoroutine(StopCar());
+            SatNav.isActive = false;
         }
 
         if (col.tag == "Stop" & gameObject.tag == "Player")
@@ -390,5 +403,11 @@ public class Car : MonoBehaviour
         main.startTimer();
 
     }
+
+    public float normaliseValues(float value, float min, float max)
+    {
+        return (value - min) / (max - min);
+    }
+
 
 }

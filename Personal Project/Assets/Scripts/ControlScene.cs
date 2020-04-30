@@ -33,6 +33,7 @@ public class ControlScene : MonoBehaviour
     public Canvas textCanvas;
     public Canvas endScreen;
     public Slider slider;
+    public AudioSource inputAudio;
 
 
     // Start is called before the first frame update
@@ -162,6 +163,8 @@ public class ControlScene : MonoBehaviour
 
                 //increment attempts
                 attempt += 1;
+
+                inputAudio.Play();
 
                 if (attempt <= ROUNDS)
                 {
