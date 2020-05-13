@@ -48,7 +48,7 @@ public class Keyboard : MonoBehaviour
             }
         }
 
-        click.Play();
+        click.PlayOneShot(click.clip);
         
     }
 }

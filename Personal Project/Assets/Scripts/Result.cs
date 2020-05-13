@@ -41,25 +41,15 @@ public class Result
     }
 
 
-    public string toString(int i)
+    public string toString()
     {
         string s = "";
+        
+        // car scene result to string
+        s = "ID: " + id + "\n" + "Scene: " + sceneName + "\n" + currentTime + "\n" + "SatNav Type: " + satnavType + "\n" + "Reaction Times: " + arrayToString() + "\n"
+            + "Correct Reactions/Incorrect Reactions: " + correctReactions + "/" + incorrectReactions + "\n" + "Correct SatNavInputs/Incorrect SatNavInputs: " + correctSatNavInputs
+            + "/" + incorrectSatNavInputs + "\n" + "Crashed: " + crashed;
 
-        switch (i)
-        {
-            case 0:
-                // car scene result to string
-                s = "ID: " + id + "\n" + "Scene: " + sceneName + "\n" + currentTime + "\n" + "SatNav Type: " + satnavType + "\n" + "Reaction Times: " + arrayToString() + "\n" 
-                    + "Correct Reactions/Incorrect Reactions: " + correctReactions + "/" + incorrectReactions + "\n" + "Correct SatNavInputs/Incorrect SatNavInputs: " + correctSatNavInputs 
-                    + "/" + incorrectSatNavInputs + "\n" + "Crashed: " + crashed;
-                break;
-            case 1:
-                // filename
-                s = sceneName + "_" + currentTime + ".txt";
-                break;
-            default:
-                break;
-        }
 
         return s;
     }

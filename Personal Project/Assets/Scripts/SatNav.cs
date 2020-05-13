@@ -20,9 +20,10 @@ public class SatNav : MonoBehaviour
     public enum Direction { LEFT, RIGHT, UP };
     private SatNavType type;
     private Direction direction;
-    public AudioSource leftAudio;
-    public AudioSource rightAudio;
-    public AudioSource forwardAudio;
+    public AudioClip leftAudio;
+    public AudioClip rightAudio;
+    public AudioClip forwardAudio;
+    public AudioSource satnavVoice;
     public AudioSource inputAudio;
 
     public Canvas arrowCanvas;
@@ -220,26 +221,27 @@ public class SatNav : MonoBehaviour
                 //audio
 
                 /*
-                 * PLAY AUDIO
+                 * Set correct clip to the audiosource
                  */
 
                 switch (r)
                 {
                     case 0:
-                        leftAudio.Play();
-                        //play "left" voice
+                        satnavVoice.clip = leftAudio;
+                        //set clip to "left" voice
                         break;
                     case 1:
-                        rightAudio.Play();
-                        //play "right" voice
+                        satnavVoice.clip = rightAudio;
+                        //set clip to "right" voice
                         break;
                     case 2:
-                        forwardAudio.Play();
-                        //play "up" voice
+                        satnavVoice.clip = forwardAudio;
+                        //set clip to "forward" voice
                         break;
                 }
 
                 print("play audio");
+                satnavVoice.PlayOneShot(satnavVoice.clip);
 
             }
             else if (type == SatNavType.VISUAL)
@@ -284,26 +286,28 @@ public class SatNav : MonoBehaviour
                 arrow.GetComponent<Image>().enabled = true;
 
                 /*
-                 * PLAY AUDIO
-                 */
+                * Set correct clip to the audiosource
+                */
 
                 switch (r)
                 {
                     case 0:
-                        leftAudio.Play();
-                        //play "left" voice
+                        satnavVoice.clip = leftAudio;
+                        //set clip to "left" voice
                         break;
                     case 1:
-                        rightAudio.Play();
-                        //play "right" voice
+                        satnavVoice.clip = rightAudio;
+                        //set clip to "right" voice
                         break;
                     case 2:
-                        forwardAudio.Play();
-                        //play "up" voice
+                        satnavVoice.clip = forwardAudio;
+                        //set clip to "forward" voice
                         break;
                 }
 
                 print("play audio");
+                satnavVoice.PlayOneShot(satnavVoice.clip);
+
             }
 
             startCountdown = true;
@@ -351,7 +355,7 @@ public class SatNav : MonoBehaviour
 
             }
 
-            inputAudio.Play();
+            inputAudio.PlayOneShot(inputAudio.clip);
         }
 
     }
@@ -419,9 +423,8 @@ public class SatNav : MonoBehaviour
             inputAudio.pitch = 0.5f;
         }
 
-        inputAudio.Play();
+        inputAudio.PlayOneShot(inputAudio.clip);
 
-        //userText.text = "[" + input + "-" + word + "]";
     }
 
     /*

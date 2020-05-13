@@ -14,15 +14,6 @@ public class StartScene : MonoBehaviour
 
     private void Start()
     {
-        //getting permission to write to external storage
-        /*
-        #if UNITY_ANDROID
-            if (!Permission.HasUserAuthorizedPermission(Permission.ExternalStorageWrite))
-            {
-                Permission.RequestUserPermission(Permission.ExternalStorageWrite);
-            }
-        #endif
-        */
 
         //code to detect if I am testing the app on computer or on the oculus device (which is android)
         #if UNITY_EDITOR
@@ -71,9 +62,9 @@ public class StartScene : MonoBehaviour
 
     public string generateRandomUserID()
     {
-        string id = "";
+        string id = "SUR";
 
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 4; i++)
         {
             id += Random.Range(0, 10);
         }

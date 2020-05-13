@@ -168,7 +168,7 @@ public class Main : MonoBehaviour
         carEngine.Stop();
 
         Result result = new Result(SceneManager.GetActiveScene().name, satnav.getSatNavType(), car.reactionTimes.ToArray(), car.correctReactions, car.incorrectReactions, satnav.correctAnswers, satnav.incorrectAnswers, car.crashed);
-        print(result.toString(0));
+        print(result.toString());
 
         SceneData.results.Add(result);
 
@@ -184,7 +184,7 @@ public class Main : MonoBehaviour
             endScreen.transform.GetChild(i).gameObject.SetActive(true);
         }
 
-        resultsText.SetText(result.toString(0));
+        resultsText.SetText(result.toString());
 
     }
 

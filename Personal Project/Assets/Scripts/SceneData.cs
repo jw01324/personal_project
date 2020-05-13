@@ -119,7 +119,7 @@ public class SceneData
 
         for (int i = 0; i < results.Count; i++)
         {
-            s += ("Result" + (i + 1) + ": " + results[i].toString(0) + "\n\n");
+            s += ("Result" + (i + 1) + ": " + results[i].toString() + "\n\n");
         }
 
         return s;
