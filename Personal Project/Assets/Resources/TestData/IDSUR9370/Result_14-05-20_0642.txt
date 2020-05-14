@@ -1,0 +1,45 @@
+ID: SUR9370
+Control Times: [461, 523, 565, 720, 978], Average = 649, Median = 565
+
+Order:
+Scene 1 = AUDIOVISUAL
+Scene 2 = PROGRAMMABLE
+Scene 3 = VISUAL
+Scene 4 = AUDIO
+
+Result1: ID: SUR9370
+Scene: Scene1
+14-05-2020T06:41:27
+SatNav Type: AUDIOVISUAL
+Reaction Times: [766, 1189, 992, 932]
+Correct Reactions/Incorrect Reactions: 4/8
+Correct SatNavInputs/Incorrect SatNavInputs: 10/5
+Crashed: True
+
+Result2: ID: SUR9370
+Scene: Scene2
+14-05-2020T06:41:41
+SatNav Type: PROGRAMMABLE
+Reaction Times: [0, 594, 1306, 0]
+Correct Reactions/Incorrect Reactions: 4/18
+Correct SatNavInputs/Incorrect SatNavInputs: 0/0
+Crashed: True
+
+Result3: ID: SUR9370
+Scene: Scene3
+14-05-2020T06:42:10
+SatNav Type: VISUAL
+Reaction Times: [0, 1980, 1009, 280, 1762]
+Correct Reactions/Incorrect Reactions: 5/13
+Correct SatNavInputs/Incorrect SatNavInputs: 4/8
+Crashed: True
+
+Result4: ID: SUR9370
+Scene: Scene4
+14-05-2020T06:42:44
+SatNav Type: AUDIO
+Reaction Times: [1645, 267, 863, 394]
+Correct Reactions/Incorrect Reactions: 4/16
+Correct SatNavInputs/Incorrect SatNavInputs: 3/12
+Crashed: False
+

@@ -4,41 +4,53 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 
+/*
+ * Class for a secret in-app menu that can be accessed for testing on the device, named DeveloperMenu
+ */
 public class DeveloperMenu : MonoBehaviour
 {
+    //GameObjects
+    private Main main;
     private Toggle scene;
     private Toggle satnav;
     public ToggleGroup scenes;
     public ToggleGroup satnavs;
-    private Main main;
 
-    private void Start()
+    // Start is called before the first frame update
+    void Start()
     {
+        //initialise variables
         main = GameObject.FindGameObjectWithTag("Main").GetComponent<Main>();
     }
 
+    /*
+     * Method for loading the control scene, activated by button press using the onClick parameter of the button object
+     */
     public void loadControlScene()
     {
         main.loadScene("ControlScene");
     }
 
+    /*
+     * Method for starting the test with the parameters selected, activated by button press using the onClick parameter of the button object
+     */
     public void startTest()
     {    
-        //setting the toggle to the active toggle in the group for scenes and satnavs
-
+        //setting the scene selected to the active toggle in the group for scenes
         foreach (var toggle in scenes.ActiveToggles())
         {
             scene = toggle;
             break;
         }
 
+        //setting the satnav selected to the active toggle in the group for scenes
         foreach (var toggle in satnavs.ActiveToggles())
         {
             satnav = toggle;
             break;
         }
 
-        //set satnav order to the type selected for each scene
+        //switch statement that sets the satnav type chosen for all scenes in the order array (incase the user wants to continue testing that type for all other scenes)
         switch (satnav.name)
         {
             case ("0"):
@@ -55,7 +67,7 @@ public class DeveloperMenu : MonoBehaviour
                 break;
         }
 
-        //start the selected scene
+        //switch statement that converts the toggle number of the scene to the scene name and then loads + starts the selected scene
         switch (scene.name)
         {
             case ("0"):
@@ -73,13 +85,20 @@ public class DeveloperMenu : MonoBehaviour
         }
     }
 
+    /*
+     * Method for loading the end scene, activated by button press using the onClick parameter of the button object
+     */
     public void loadEndScene()
     {
         main.loadScene("EndScene");
     }
 
+    /*
+     * Method for quitting the application, activated by button press using the onClick parameter of the button object
+     */
     public void quit()
     {
         main.quit();
     }
+
 }

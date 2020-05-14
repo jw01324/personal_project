@@ -1,9 +1,0 @@
-ID: 2711756979
-Control Times: [0, 0, 0, 0, 0], Average = 0, Median = 0
-
-Order:
-Scene 1 = AUDIO
-Scene 2 = PROGRAMMABLE
-Scene 3 = VISUAL
-Scene 4 = AUDIOVISUAL
-

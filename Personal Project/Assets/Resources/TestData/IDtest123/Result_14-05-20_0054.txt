@@ -1,0 +1,18 @@
+ID: test123
+Control Times: [0, 0, 0, 0, 0], Average = 0, Median = 0
+
+Order:
+Scene 1 = AUDIOVISUAL
+Scene 2 = AUDIOVISUAL
+Scene 3 = AUDIOVISUAL
+Scene 4 = AUDIOVISUAL
+
+Result1: ID: test123
+Scene: Scene4
+14-05-2020T00:54:49
+SatNav Type: AUDIOVISUAL
+Reaction Times: []
+Correct Reactions/Incorrect Reactions: 0/8
+Correct SatNavInputs/Incorrect SatNavInputs: 0/12
+Crashed: True
+
