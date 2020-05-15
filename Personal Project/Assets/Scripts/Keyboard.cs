@@ -60,10 +60,10 @@ public class Keyboard : MonoBehaviour
                 //so add the name of the button to the string (as the name of the button is the same as the name of the character)
                 textUI.text += button.gameObject.name.ToString();
             }
-        }
 
-        //play the click sound effect (keyboard click) once
-        click.PlayOneShot(click.clip);
+            //play the click sound effect (keyboard click) once
+            click.PlayOneShot(click.clip);
+        }
     }
 
 }

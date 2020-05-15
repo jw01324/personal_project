@@ -38,6 +38,18 @@ public class Result
         //sets current time of when the result was recorded
         currentTime = DateTime.Now.ToString("dd-MM-yyyyTHH':'mm':'ss");
 
+        //checks that these values are null, if they are then throw an exception
+        if(sceneName == null | satnavType == null | reactionTimes == null)
+        {
+            throw new NullReferenceException();
+        }
+
+        //checks if reaction counts are below zero, as that should be impossible.
+        if(correctReactions < 0 | incorrectReactions < 0 | correctSatNavInputs < 0 | incorrectSatNavInputs < 0)
+        {
+            throw new ArgumentException();
+        }
+
         //sets all global variables to the values of the respective parameters
         this.sceneName = sceneName;
         this.satnavType = satnavType;

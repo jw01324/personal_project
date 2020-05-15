@@ -51,17 +51,14 @@ public class FileManager
         //checks if application is running on the oculus or pc
         if (!SceneData.isOnOculus)
         {
-            //if pc, set folderpath variable to a path on the pc (resources folder of the unity folder)
-            folderPath = "Assets/Resources/TestData/ID" + SceneData.userID;
+            //checks if the folder exists, return this boolean (true/false) value
+            return Directory.Exists("Assets/Resources/TestData/ID" + userID);
         }
         else
         {
-            //if oculus, set folderpath variable to a path on the oculus device (persistent data path subfolder)
-            folderPath = Application.persistentDataPath + "/TestData/ID" + SceneData.userID;
+            //checks if the folder exists, return this boolean (true/false) value
+            return Directory.Exists(Application.persistentDataPath + "/TestData/ID" + userID);
         }
-
-        //checks if the folder exists, return this boolean (true/false) value
-        return Directory.Exists(folderPath);
     }
 
     /*
@@ -73,6 +70,22 @@ public class FileManager
     {
         //try block for writing the file
         try {
+
+            //checks if folderpath is null, this will only be the case if create directory hasn't been run. 
+            if (folderPath == null)
+            {
+                //checks if application is running on the oculus or pc
+                if (!SceneData.isOnOculus)
+                {
+                    //if pc, set folderpath variable to a path on the pc (resources folder of the unity folder)
+                    folderPath = "Assets/Resources/TestData/ID" + SceneData.userID;
+                }
+                else
+                {
+                    //if oculus, set folderpath variable to a path on the oculus device (persistent data path subfolder)
+                    folderPath = Application.persistentDataPath + "/TestData/ID" + SceneData.userID;
+                }
+            }
 
             //filepath - which is a text file which includes the date of creation in the name
             string filePath = folderPath + "/Result_" + DateTime.Now.ToString("dd-MM-yy_HHmm") + ".txt";

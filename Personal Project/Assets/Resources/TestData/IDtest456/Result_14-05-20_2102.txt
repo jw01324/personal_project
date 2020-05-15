@@ -1,9 +1,9 @@
-ID: 6345224029
+ID: test456
 Control Times: [0, 0, 0, 0, 0], Average = 0, Median = 0
 
 Order:
 Scene 1 = AUDIOVISUAL
-Scene 2 = PROGRAMMABLE
-Scene 3 = VISUAL
-Scene 4 = AUDIO
+Scene 2 = AUDIOVISUAL
+Scene 3 = AUDIOVISUAL
+Scene 4 = AUDIOVISUAL
 
