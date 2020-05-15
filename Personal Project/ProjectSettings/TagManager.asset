@@ -11,6 +11,14 @@ TagManager:
   - SatNav
   - EndScreen
   - Axis
+  - Main
+  - StartScreen
+  - SteeringWheel
+  - UIhelper
+  - Keyboard
+  - Correct_SFX
+  - Engine_SFX
+  - Crash_SFX
   layers:
   - Default
   - TransparentFX
@@ -20,7 +28,7 @@ TagManager:
   - UI
   - 
   - 
-  - 
+  - Post Processing
   - 
   - 
   - 

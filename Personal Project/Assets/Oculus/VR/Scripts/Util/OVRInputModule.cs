@@ -33,7 +33,7 @@ namespace UnityEngine.EventSystems
         public OVRInput.Button joyPadClickButton = OVRInput.Button.One;
 
         [Tooltip("Keyboard button to act as gaze click")]
-        public KeyCode gazeClickKey = KeyCode.Space;
+        public KeyCode gazeClickKey = KeyCode.None;
 
         [Header("Physics")]
         [Tooltip("Perform an sphere cast to determine correct depth for gaze pointer")]
@@ -41,14 +41,14 @@ namespace UnityEngine.EventSystems
 
         [Header("Gamepad Stick Scroll")]
         [Tooltip("Enable scrolling with the right stick on a gamepad")]
-        public bool useRightStickScroll = true;
+        public bool useRightStickScroll = false;
 
         [Tooltip("Deadzone for right stick to prevent accidental scrolling")]
         public float rightStickDeadZone = 0.15f;
 
         [Header("Touchpad Swipe Scroll")]
         [Tooltip("Enable scrolling by swiping the GearVR touchpad")]
-        public bool useSwipeScroll = true;
+        public bool useSwipeScroll = false;
         [Tooltip("Minimum trackpad movement in pixels to start swiping")]
         public float swipeDragThreshold = 2;
         [Tooltip("Distance scrolled when swipe scroll occurs")]
