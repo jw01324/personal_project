@@ -48,6 +48,8 @@ public class Car : MonoBehaviour
     void Start()
     {
         //initialising variables
+        needToStop = false;
+        lightIntensity = 15f;
         crashed = false;
         incorrectReactions = 0;
         correctReactions = 0;

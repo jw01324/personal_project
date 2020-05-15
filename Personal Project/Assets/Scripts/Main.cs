@@ -22,6 +22,7 @@ public class Main : MonoBehaviour
     private Car car;
     private SatNav satnav;
     private AudioSource backgroundNoise;
+    private AudioSource crashSound;
 
     //UI
     private GameObject startScreen;
@@ -51,6 +52,7 @@ public class Main : MonoBehaviour
             satnav = GameObject.FindGameObjectWithTag("SatNav").GetComponent<SatNav>();
             car = GameObject.FindGameObjectWithTag("Player").GetComponent<Car>();
             backgroundNoise = GameObject.FindGameObjectWithTag("Player").GetComponent<AudioSource>();
+            crashSound = GameObject.FindGameObjectWithTag("Crash_SFX").GetComponent<AudioSource>();
             startScreen = GameObject.FindGameObjectWithTag("StartScreen");
             endScreen = GameObject.FindGameObjectWithTag("EndScreen");
 
@@ -181,6 +183,10 @@ public class Main : MonoBehaviour
      */
     public void stopScene()
     {
+        if (car.crashed)
+        {
+            crashSound.PlayOneShot(crashSound.clip);
+        }
         //set done to true
         done = true;
 

@@ -38,7 +38,8 @@ public class SatNav : MonoBehaviour
     public AudioClip rightAudio;
     public AudioClip forwardAudio;
     public AudioSource satnavVoice;
-    public AudioSource inputAudio;
+    public AudioSource correctInput;
+    public AudioSource incorrectInput;
 
     //UI
     public Canvas arrowCanvas;
@@ -228,7 +229,7 @@ public class SatNav : MonoBehaviour
         startCountdown = false;
 
         //choose a random length of time to wait after the last query, before choosing the next query
-        int sec = Random.Range(3, 8);
+        float sec = Random.Range(2, 5);
 
         //wait for the random length of time
         yield return new WaitForSeconds(sec);
@@ -361,6 +362,9 @@ public class SatNav : MonoBehaviour
                 //the incorrect answers variable is incremented by one
                 incorrectAnswers++;
 
+                //play the 'incorrect' audioclip (input feedback)
+                incorrectInput.PlayOneShot(incorrectInput.clip);
+
                 //checks if the satnav type is visual in some way
                 if (type == SatNavType.AUDIOVISUAL | type == SatNavType.VISUAL)
                 {
@@ -370,10 +374,6 @@ public class SatNav : MonoBehaviour
 
                 //reset the directional satnav and start the concurrent method to choose a new random direction
                 StartCoroutine(PickDirection());
-
-                //set the input audio pitch to 0.5 (lower pitch to differentiate the correct and incorrect sounds)
-                inputAudio.pitch = 0.5f;
-
             }
             else
             {
@@ -381,6 +381,9 @@ public class SatNav : MonoBehaviour
 
                 //increment the correct answers variable by one
                 correctAnswers++;
+
+                //play the 'correct' audioclip (input feedback)
+                correctInput.PlayOneShot(correctInput.clip);
 
                 //checks if the satnav type is visual in some way
                 if (type == SatNavType.AUDIOVISUAL | type == SatNavType.VISUAL)
@@ -391,14 +394,7 @@ public class SatNav : MonoBehaviour
 
                 //reset the directional satnav and start the concurrent method to choose a new random direction
                 StartCoroutine(PickDirection());
-
-                //set the input audio pitch to 1 (higher pitch to differentiate the correct and incorrect sounds)
-                inputAudio.pitch = 1f;
-
-            }
-
-            //play the audioclip (input feedback)
-            inputAudio.PlayOneShot(inputAudio.clip);
+            }     
         }
     }
 
@@ -468,24 +464,21 @@ public class SatNav : MonoBehaviour
             //if they are the same, increment the correct answers variable by one
             correctAnswers++;
 
+            //play the 'correct' audioclip (input feedback)
+            correctInput.PlayOneShot(correctInput.clip);
+
             //generate a new word, and set the user text field to an empty string (so they don't have to erase the previous string)
             wordText.text = generateWord();
             userText.text = "";
-
-            //set the audioclip pitch to 1 (higher pitch for correct)
-            inputAudio.pitch = 1f;
         }
         else
         {
             //if they are not the same then increment the correct answers variable by one
             incorrectAnswers++;
 
-            //set the audioclip pitch to 0.5 (lower pitch for incorrect)
-            inputAudio.pitch = 0.5f;
+            //play the 'incorrect' audioclip (input feedback)
+            incorrectInput.PlayOneShot(incorrectInput.clip);
         }
-
-        //play the audioclip for the user reaction (input feedback)
-        inputAudio.PlayOneShot(inputAudio.clip);
     }
 
     /*

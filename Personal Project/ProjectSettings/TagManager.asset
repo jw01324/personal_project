@@ -18,6 +18,7 @@ TagManager:
   - Keyboard
   - Correct_SFX
   - Engine_SFX
+  - Crash_SFX
   layers:
   - Default
   - TransparentFX
